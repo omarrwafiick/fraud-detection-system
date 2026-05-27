@@ -1,4 +1,7 @@
 import { Module } from '@nestjs/common';
+import { AlertsService } from './alerts.service';
 
-@Module({})
+@Module({
+  providers: [AlertsService]
+})
 export class AlertsModule {}
