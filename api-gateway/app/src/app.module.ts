@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { AuthModule } from './auth/auth.module';
 import { EventsModule } from './events/events.module';
 import { IngestionModule } from './ingestion/ingestion.module';
+import { ApiModule } from './api/api.module';
 
 @Module({
-  imports: [AuthModule, EventsModule, IngestionModule],
+  imports: [EventsModule, IngestionModule, ApiModule],
   controllers: [],
   providers: [],
 })
