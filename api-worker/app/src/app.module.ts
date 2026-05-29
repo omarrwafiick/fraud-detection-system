@@ -11,6 +11,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'node:path';
 import { ConfigModule } from '@nestjs/config';
 import { SyncCheckModule } from './sync-check/sync-check.module';
+import { ApikeyModule } from './apikey/apikey.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { SyncCheckModule } from './sync-check/sync-check.module';
     CasesModule,
     AuthModule,
     JwtAuthGuard,
+    ApikeyModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DATABASE_HOST || 'localhost',

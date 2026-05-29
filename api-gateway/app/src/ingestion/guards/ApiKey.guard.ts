@@ -26,7 +26,7 @@ export class ApiKeyGuard implements CanActivate {
     
     const key = `apikey:${userId}`;
 
-    const bankMetadata = this.redisInstance.get(key);
+    const bankMetadata = await this.redisInstance.get(key);
 
     if (!bankMetadata) {
       throw new UnauthorizedException('Invalid API Key provided.');

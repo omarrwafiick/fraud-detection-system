@@ -1,17 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { RedisInstance } from '../common/redis/redis.client';
 import { randomBytes } from 'node:crypto';
+import { RedisInstance } from 'src/shared/redis/redis.client';
 
 @Injectable()
 export class ApikeyService {
     private readonly redisInstance = RedisInstance.get();
-    createKey(userId: string){
+    async createKey(userId: string){
         const key = `apikey:${userId}`;
-        const hasKey = this.redisInstance.get(key);
+        const hasKey = await this.redisInstance.get(key);
 
         if(!hasKey){
             const newKey = this.generateKey();
-            this.redisInstance.set(key, newKey);
+            await this.redisInstance.set(key, newKey);
             return { key: newKey };
         }
         
