@@ -16,6 +16,7 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { EvaluationModule } from './evaluation/evaluation.module';
 import { CacheModule } from '@nestjs/cache-manager';
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
@@ -51,6 +52,7 @@ import { CacheModule } from '@nestjs/cache-manager';
       max: 1000, // Maximum number of items in cache
       isGlobal: true, // Makes CacheModule available everywhere without re-importing
     }),
+    HealthModule,
   ],
   controllers: [],
   providers: [

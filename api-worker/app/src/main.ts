@@ -21,6 +21,8 @@ async function bootstrap() {
 
   const port = process.env.PORT || 3001;
 
+  app.enableShutdownHooks();
+
   await app.startAllMicroservices();
   await app.listen(port);
   
