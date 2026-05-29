@@ -17,6 +17,8 @@ import { APP_GUARD } from '@nestjs/core';
 import { EvaluationModule } from './evaluation/evaluation.module';
 import { CacheModule } from '@nestjs/cache-manager';
 import { HealthModule } from './health/health.module';
+import { PassportModule } from '@nestjs/passport';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -53,6 +55,11 @@ import { HealthModule } from './health/health.module';
       isGlobal: true, // Makes CacheModule available everywhere without re-importing
     }),
     HealthModule,
+    PassportModule.register({ defaultStrategy: 'jwt' }),
+    JwtModule.register({
+      secret: process.env.JWT_SECRET || 'secure_cluster_token_2026',
+      signOptions: { expiresIn: '1d' },
+    }),
   ],
   controllers: [],
   providers: [
