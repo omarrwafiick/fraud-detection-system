@@ -1,48 +1,52 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, Res, Req, HttpCode, HttpStatus } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { BaseUserResponseDto, LoginUserDto } from './dtos/login.dto';
+import { LoginUserDto } from './dtos/login.dto';
 import { SignUpUserDto } from './dtos/signup.dto';
 import * as express from 'express';
-import { JwtAuthGuard } from 'src/common/guards/jwtAuth.guard';
+import { User } from './entities/user.entity';
 
-@Controller('auth')
+@Controller('v1/auth')
 export class AuthController {
-    constructor(
-        private readonly authService: AuthService,
-    ){}
+  private readonly COOKIE_NAME = 'access_token';
 
-    @Post("login")
-    async login(
-        @Req() request: express.Request,
-        @Res() response: express.Response,
-        @Body() payload: LoginUserDto
-    ) 
-    : Promise<BaseUserResponseDto> {
-        return await this.authService.login(request, response, payload);
-    }
+  constructor(private readonly authService: AuthService) {}
 
-    @Post("signup")
-    @HttpCode(HttpStatus.CREATED)
-    async signup(
-        @Res() response: express.Response,
-        @Body() payload: SignUpUserDto
-    ) 
-    : Promise<BaseUserResponseDto>{
-        return await this.authService.signup(response, payload);
-    }
+  @Post('login')
+  @HttpCode(HttpStatus.OK)
+  async login(
+    @Body() payload: LoginUserDto,
+    @Res({ passthrough: true }) res: express.Response,
+  ) {
+    const result = await this.authService.validateUserCredentials(payload);
 
-    @Get("refresh")
-    @UseGuards(JwtAuthGuard)
-    async refreshToken(
-        @Req() request: express.Request,
-        @Res() response: express.Response
-    ): Promise<string>{
-        return await this.authService.refreshToken((request.user as any)?.id || 0, response);
-    }
+    res.cookie(this.COOKIE_NAME, result.token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 24 * 60 * 60 * 1000,
+    });
 
-    @Post("logout")
-    @UseGuards(JwtAuthGuard)
-    logout(@Res() response: express.Response): void{
-        return this.authService.logout(response);
-    }
+    return result;
+  }
+
+  @Post('signup')
+  async signup(@Body() payload: SignUpUserDto) {
+    return this.authService.signup(payload);
+  }
+
+  @Post('token/refresh')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async refreshToken(
+    @Res({ passthrough: true }) res: express.Response,
+    
+    @Req() req: express.Request,
+  ) {
+    return await this.authService.refreshUserSession((req.user as User)?.id);
+  }
+
+  @Post('logout')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async logout(@Res({ passthrough: true }) res: express.Response) {
+    res.clearCookie(this.COOKIE_NAME);
+  }
 }

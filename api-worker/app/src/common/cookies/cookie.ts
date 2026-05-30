@@ -1,24 +1,26 @@
-import * as express from 'express';
+import { Response, Request, CookieOptions } from 'express';
 
-export class CookieService{
-    public static get(key: string, req: express.Request) : string | null{
-        if (req && req.cookies) {
-            return req.cookies[key] || null;
-        }
-        return null;
+export class CookieService {
+  public static get(key: string, req: Request): string | null {
+    if (!req || !req.cookies) {
+      return null;
+    }
+    return req.cookies[key] || null;
+  }
+
+  public static set(key: string, value: string, res: Response, options: CookieOptions): void {
+    if (!res) {
+      throw new Error('Response object is required to assign a secure session cookie.');
     }
 
-    public static set(key: string, value: string, res: express.Response, options: express.CookieOptions){
-        if (res) {
-            res.cookie(key, value, options);
-        }
-        throw new Error("Response is not passed to add a new cookie");
+    res.cookie(key, value, options);
+  }
+
+  public static remove(key: string, res: Response): void {
+    if (!res) {
+      throw new Error('Response object is required to evict a session cookie.');
     }
 
-    public static remove(key: string, res: express.Response){
-        if (res) {
-            res.clearCookie(key);
-        }
-        throw new Error("Response is not passed to remove the cookie");
-    }
+    res.clearCookie(key);
+  }
 }

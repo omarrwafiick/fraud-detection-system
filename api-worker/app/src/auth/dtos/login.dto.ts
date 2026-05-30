@@ -11,6 +11,6 @@ export class LoginUserDto {
 }
 
 export class BaseUserResponseDto {
-  data: Partial<User>;
-  access_token?: string;
+  user: Partial<User>;
+  token?: string;
 }
