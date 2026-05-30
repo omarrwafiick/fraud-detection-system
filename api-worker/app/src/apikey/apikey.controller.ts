@@ -11,7 +11,7 @@ export class ApikeyController {
     @UseGuards(JwtAuthGuard)
     @HttpCode(HttpStatus.CREATED)
     async generateApiKey(@Req() request: express.Request){
-        const userId = (request.user as User).id;
+        const userId = (request.user as any).id;
         return await this.apikeyService.createKey(userId);
     }
 }

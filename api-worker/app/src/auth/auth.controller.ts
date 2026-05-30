@@ -3,7 +3,6 @@ import { AuthService } from './auth.service';
 import { LoginUserDto } from './dtos/login.dto';
 import { SignUpUserDto } from './dtos/signup.dto';
 import * as express from 'express';
-import { User } from './entities/user.entity';
 
 @Controller('v1/auth')
 export class AuthController {
@@ -41,7 +40,7 @@ export class AuthController {
     
     @Req() req: express.Request,
   ) {
-    return await this.authService.refreshUserSession((req.user as User)?.id);
+    return await this.authService.refreshUserSession((req.user as any)?.id);
   }
 
   @Post('logout')

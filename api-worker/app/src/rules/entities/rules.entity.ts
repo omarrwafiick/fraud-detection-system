@@ -1,7 +1,7 @@
 import { Tenant } from 'src/tenant/entities/tenant.entity';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, UpdateDateColumn, JoinColumn, Index } from 'typeorm';
 
-enum RuleSeverity {
+export enum RuleSeverity {
   'MEDIUM', 
   'HIGH',
   'CRITICAL'

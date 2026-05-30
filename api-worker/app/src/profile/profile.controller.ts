@@ -13,7 +13,7 @@ export class ProfileController {
     async getProfile(
         @Req() request: express.Request,
     ){
-        const userId = (request.user as User).id;
+        const userId = (request.user as any).id;
         return this.profileService.getProfile(userId);
     }
 }

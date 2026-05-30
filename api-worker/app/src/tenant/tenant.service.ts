@@ -32,4 +32,10 @@ export class TenantService {
 
     return await repo.save(newTenant);
   }
+
+  async tenantExistsById(tenantId: number){
+    return await this.repository.existsBy([
+        {id: tenantId }
+    ]);
+  }
 }
