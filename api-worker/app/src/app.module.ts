@@ -20,6 +20,7 @@ import { HealthModule } from './health/health.module';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { ProfileModule } from './profile/profile.module';
+import { TransactionsModule } from './transactions/transactions.module';
 
 @Module({
   imports: [
@@ -64,6 +65,7 @@ import { ProfileModule } from './profile/profile.module';
       signOptions: { expiresIn: '1d' },
     }),
     ProfileModule,
+    TransactionsModule,
   ],
   controllers: [],
   providers: [

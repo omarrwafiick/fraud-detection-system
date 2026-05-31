@@ -4,10 +4,12 @@ import { Case, CaseSeverity, CaseStatus, TriggerType } from './entities/case.ent
 import { GetCaseDto } from './dto/getCases.dto';
 import { UpdateCaseDto } from './dto/updateCase.dto';
 import { TenantService } from 'src/tenant/tenant.service';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class CasesService {
     constructor(
+        @InjectRepository(Case)
         private readonly repository: Repository<Case>,
         private readonly tenantService: TenantService,
     ){}

@@ -1,10 +1,11 @@
-import { Controller, Get, Req } from '@nestjs/common';
+import { Controller, Get, Req, UseInterceptors } from '@nestjs/common';
 import { ProfileService } from './profile.service';
 import * as express from 'express';
-import { User } from 'src/auth/entities/user.entity';
 import { IUser } from 'src/auth/interfaces/user.interface';
+import { CacheInterceptor } from '@nestjs/cache-manager';
 
 @Controller('profile')
+@UseInterceptors(CacheInterceptor)
 export class ProfileController {
     constructor(
         private readonly profileService: ProfileService,

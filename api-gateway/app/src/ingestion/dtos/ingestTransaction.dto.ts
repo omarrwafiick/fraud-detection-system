@@ -1,18 +1,14 @@
-import { IsString, IsNumber, IsPositive, IsISO8601, IsObject, ValidateNested, IsNotEmpty, IsIP } from 'class-validator';
+import { IsString, IsNumber, IsPositive, IsISO8601, IsObject, ValidateNested, IsNotEmpty, IsIP, IsIn } from 'class-validator';
 import { Type } from 'class-transformer';
 
-
-class MainTransactionDto {
-  @IsString()
-  @IsNotEmpty()
-  account_id: string;
-
+class SenderDto {
   @IsString()
   @IsNotEmpty()
   user_id: string;
-}
 
-class SenderDto extends MainTransactionDto {
+  @IsString()
+  @IsNotEmpty()
+  account_id: string;
 
   @IsString()
   @IsNotEmpty()
@@ -22,10 +18,10 @@ class SenderDto extends MainTransactionDto {
   ip_address: string;
 }
 
-class ReceiverDto extends MainTransactionDto {
+class ReceiverDto {
   @IsString()
   @IsNotEmpty()
-  bank_code: string;
+  account_id: string;
 }
 
 export class IngestTransactionDto {
@@ -36,6 +32,10 @@ export class IngestTransactionDto {
   @IsNumber({ maxDecimalPlaces: 2 })
   @IsPositive()
   amount: number;
+
+  @IsString()
+  @IsIn(['CENTS'])
+  amountUnit: 'CENTS';
 
   @IsString()
   @IsNotEmpty()

@@ -2,10 +2,12 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { User } from 'src/auth/entities/user.entity';
 import { Repository } from 'typeorm';
 import { ProfileDto } from './dtos/profile.dto';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class ProfileService {
     constructor(
+        @InjectRepository(User)
         private readonly userRepository: Repository<User>
     ){}
     

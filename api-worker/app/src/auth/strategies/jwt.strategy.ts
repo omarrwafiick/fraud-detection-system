@@ -3,6 +3,8 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-jwt';
 import { CookieService } from 'src/common/cookies/cookie';
 import * as express from 'express';
+import { IUser } from '../interfaces/user.interface';
+import { Role } from '../entities/user.entity';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
@@ -14,14 +16,14 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     });
   }
 
-  async validate(payload: { sub: string; email: string; roles: string[], tenantId: number }) {
+  async validate(payload: { sub: string; email: string; role: Role, tenantId: number }): Promise<Partial<IUser>> {
     if (!payload) {
       throw new UnauthorizedException('Invalid or expired authentication session.');
     }
     return {
-      id: payload.sub,
+      id: Number(payload.sub),
       email: payload.email,
-      roles: payload.roles,
+      role: payload.role,
       tenantId: payload.tenantId,
     };
   }

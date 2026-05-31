@@ -4,10 +4,12 @@ import { Rule, RuleSeverity } from './entities/rules.entity';
 import { GetRuleDto } from './dtos/getRule.dto';
 import { CreateRuleDto } from './dtos/createRule.dto';
 import { TenantService } from 'src/tenant/tenant.service';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class RulesService {
-    private constructor(
+    constructor(
+        @InjectRepository(Rule)
         private readonly repository: Repository<Rule>,
         private readonly tenantService: TenantService,
     ){}
