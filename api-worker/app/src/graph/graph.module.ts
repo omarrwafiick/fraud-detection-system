@@ -1,6 +1,7 @@
 import { Global, Module, OnApplicationShutdown } from '@nestjs/common';
 import { GraphService } from './graph.service';
 import neo4j, { Driver } from 'neo4j-driver';
+import { GraphController } from './graph.controller';
 export const NEO4J_DRIVER = 'NEO4J_DRIVER';
 
 @Global()
@@ -21,6 +22,7 @@ export const NEO4J_DRIVER = 'NEO4J_DRIVER';
     GraphService
   ],
   exports: [GraphService],
+  controllers: [GraphController],
 })
 export class GraphModule implements OnApplicationShutdown {
   constructor(private readonly driver: Driver) {}
