@@ -38,4 +38,8 @@ export class TenantService {
         {id: tenantId }
     ]);
   }
+
+  async getTenantById(tenantId: number){
+    return await this.repository.findOneBy({id: tenantId});
+  }
 }
