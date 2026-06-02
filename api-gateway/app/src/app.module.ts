@@ -16,7 +16,7 @@ import { APP_GUARD } from '@nestjs/core';
     KafkaProducerModule,
     ThrottlerModule.forRoot([{
       ttl: 60000, // 1 minute
-      limit: 10,   // 10 requests per minute globally
+      limit: 20,   // 20 requests per minute globally
     }]),
   ],
   providers: [

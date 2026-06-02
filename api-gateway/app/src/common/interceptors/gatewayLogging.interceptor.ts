@@ -5,12 +5,12 @@ import * as express from 'express';
 
 @Injectable()
 export class GatewayLoggingInterceptor implements NestInterceptor {
+  private readonly logger = new Logger('GATEWAY_TRAFFIC');
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const httpContext = context.switchToHttp();
     const request = httpContext.getRequest<express.Request>();
     const response = httpContext.getResponse<express.Response>();
-    const logger = new Logger('GATEWAY_TRAFFIC');
 
     const startTime = process.hrtime();
 
@@ -29,7 +29,7 @@ export class GatewayLoggingInterceptor implements NestInterceptor {
             statusCode: response.statusCode,
             latencyMs: parseFloat(durationInMs),
           };
-          logger.log(`GATEWAY INFO: ${JSON.stringify(logPayload)}`);
+          this.logger.log(`GATEWAY INFO: ${JSON.stringify(logPayload)}`);
         },
         error: (err) => {
           const diff = process.hrtime(startTime);
@@ -40,7 +40,7 @@ export class GatewayLoggingInterceptor implements NestInterceptor {
             errorMessage: err.message,
             latencyMs: parseFloat(durationInMs),
           }
-          logger.error(`GATEWAY ERROR: ${JSON.stringify(logPayload)}`);
+          this.logger.error(`GATEWAY ERROR: ${JSON.stringify(logPayload)}`);
         },
       }),
     );

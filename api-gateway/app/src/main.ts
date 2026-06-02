@@ -2,8 +2,8 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { INestApplication, Logger, ValidationPipe } from '@nestjs/common';
 import { WinstonModule } from 'nest-winston';
-import { loggerConfig } from './common/logger.config';
-import { GatewayLoggingInterceptor } from './common/interceptor/gatewayLogging.interceptor';
+import { loggerConfig } from './common/logger/logger.config';
+import { GatewayLoggingInterceptor } from './common/interceptors/gatewayLogging.interceptor';
 import { GatewayExceptionFilter } from './common/filters/gateway-exception.filter';
 
 async function bootstrap() {
@@ -14,6 +14,7 @@ async function bootstrap() {
   configLogger(app);
   configPipes(app);
   configFilters(app);
+  configPrivateAccess(app);
 
   const port = process.env.PORT || 3000;
 
@@ -40,6 +41,15 @@ function configLogger(app: INestApplication<any>){
 
 function configFilters(app: INestApplication<any>){
   app.useGlobalFilters(new GatewayExceptionFilter());
+}
+
+function configPrivateAccess(app: INestApplication<any>){
+  // Allow access only to nginx (reverse proxy)
+  app.enableCors({
+    origin: process.env.GATEWAY_ORIGIN || 'http://localhost:80',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  });
 }
 
 bootstrap();

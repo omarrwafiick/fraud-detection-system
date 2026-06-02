@@ -1,34 +1,52 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, Res, Req, HttpCode, HttpStatus } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { IsUserGuard } from './guards/isUser.guard';
 import { LoginUserDto } from './dtos/login.dto';
 import { SignUpUserDto } from './dtos/signup.dto';
+import * as express from 'express';
+import { IUser } from './interfaces/user.interface';
 
-@Controller('auth')
+@Controller('v1/auth')
 export class AuthController {
-    constructor(
-        private readonly authService: AuthService,
-        
-    ){}
+  private readonly COOKIE_NAME = 'access_token';
 
-    @Post("login")
-    async login(@Body() payload: LoginUserDto){
+  constructor(private readonly authService: AuthService) {}
 
-    }
+  @Post('login')
+  @HttpCode(HttpStatus.OK)
+  async login(
+    @Body() payload: LoginUserDto,
+    @Res({ passthrough: true }) res: express.Response,
+  ) {
+    const result = await this.authService.validateUserCredentials(payload);
 
-    @Post("signup")
-    @HttpCode(HttpStatus.CREATED)
-    async signup(@Body() payload: SignUpUserDto){
+    res.cookie(this.COOKIE_NAME, result.token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 24 * 60 * 60 * 1000,
+    });
 
-    }
+    return result;
+  }
 
-    @Get("refresh")
-    async refresh(){
+  @Post('signup')
+  async signup(@Body() payload: SignUpUserDto) {
+    return this.authService.signup(payload);
+  }
 
-    }
+  @Post('token/refresh')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async refreshToken(
+    @Res({ passthrough: true }) res: express.Response,
+    
+    @Req() req: express.Request,
+  ) {
+    return await this.authService.refreshUserSession((req.user as IUser)?.id);
+  }
 
-    @Post("logout")
-    logout(){
-
-    }
+  @Post('logout')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async logout(@Res({ passthrough: true }) res: express.Response) {
+    res.clearCookie(this.COOKIE_NAME);
+  }
 }

@@ -13,8 +13,10 @@ export class SignUpUserDto {
   @IsString()
   @MinLength(8, { message: 'Password must be at least 8 characters long' })
   password: string;
-  
-  @IsOptional()
-  @IsNumber()
-  tenantId: number;
+
+  @IsString()
+  webhookUrl: string;
+
+  @IsString()
+  tenantName: string
 }

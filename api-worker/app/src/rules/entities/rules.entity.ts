@@ -1,8 +1,8 @@
 import { Tenant } from 'src/tenant/entities/tenant.entity';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, UpdateDateColumn, JoinColumn, Index } from 'typeorm';
 
-enum RuleSeverity {
-  'MEDIUM', 
+export enum RuleSeverity {
+  'MEDIUM',
   'HIGH',
   'CRITICAL'
 }
@@ -21,7 +21,7 @@ export class Rule {
   tenant: Tenant;
 
   @Column({ type: 'varchar', length: 255 })
-  name: string;
+  name: 'HIGH_VALUE_VELOCITY_CHECK' | 'DETECT_TRANSACTION_CYCLES' | 'DEGREES_OF_SEPARATION_LIMIT';
 
   @Column({ type: 'enum',  enum: RuleSeverity, default: RuleSeverity.HIGH })
   severity: RuleSeverity;

@@ -1,20 +1,15 @@
 import { Tenant } from 'src/tenant/entities/tenant.entity';
+import { Transactions } from 'src/transactions/entities/transactions.entity';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, UpdateDateColumn, JoinColumn, Index } from 'typeorm';
 
-enum CaseStatus {
+export enum CaseStatus {
     'OPEN'='OPEN',
     'INVESTIGATING'='INVESTIGATING', 
     'RESOLVED'='RESOLVED',
     'DISMISSED'='DISMISSED',
 }
 
-enum CaseSeverity {
-    'MEDIUM'='MEDIUM', 
-    'HIGH'='HIGH',
-    'CRITICAL'='CRITICAL',
-}
-
-enum TriggerType{
+export enum TriggerType{
     'CYCLIC_TRANSFER_DETECTION'='CYCLIC_TRANSFER_DETECTION',
     'CUSTOM_RULE_VIOLATION'='CUSTOM_RULE_VIOLATION',
 }
@@ -32,12 +27,17 @@ export class Case {
   @JoinColumn({ name: 'tenantId' })
   tenant: Tenant;
 
+  @Index()
+  @Column()
+  transactionId: number;
+
+  @ManyToOne(() => Transactions, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'transactionId' })
+  transaction: Transactions;
+
   @Column({ type: 'enum', enum: CaseStatus, default: CaseStatus.OPEN })
   status: CaseStatus;
-
-  @Column({ type: 'enum', enum: CaseSeverity, default: CaseSeverity.HIGH })
-  severity: CaseSeverity;
-
+  
   @Column({ type: 'enum', enum: TriggerType, default: TriggerType.CYCLIC_TRANSFER_DETECTION })
   triggerType: TriggerType; 
 

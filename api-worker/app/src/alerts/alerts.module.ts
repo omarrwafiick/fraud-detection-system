@@ -1,7 +1,9 @@
 import { Module } from '@nestjs/common';
-import { AlertsService } from './alerts.service';
+import { AlertsListener } from './alerts.listener';
+import { CasesModule } from 'src/cases/cases.module';
 
 @Module({
-  providers: [AlertsService]
+  providers: [AlertsListener],
+  imports: [CasesModule]
 })
 export class AlertsModule {}

@@ -9,16 +9,17 @@ import {
   ManyToOne, 
   JoinColumn 
 } from 'typeorm';
+import { IUser } from '../interfaces/user.interface';
 
 
-enum Role {
+export enum Role {
   'ANALYST'='ANALYST',
   'ADMIN'='ADMIN'
 }
 
 @Entity('users')
 @Index(['tenantId', 'email'], { unique: true })
-export class User {
+export class User implements IUser {
   @PrimaryGeneratedColumn()
   id: number;
 

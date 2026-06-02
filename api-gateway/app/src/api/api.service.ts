@@ -19,6 +19,7 @@ export class ApiService {
 
     this.logger.log(`Proxying incoming ${method} request out to target endpoint: ${destinationUrl}`);
 
+    const requestId = (req.headers['x-request-id'] || req.header['X-REQUEST-ID']) as string;
     try {
       const responseStream = await firstValueFrom(
         this.httpService.request({
@@ -29,6 +30,7 @@ export class ApiService {
           headers: {
             ...req.headers,
             'x-forwarded-by': 'fraud-api-gateway', 
+            'x-request-id': requestId,
           },
           validateStatus: () => true, 
         }),
