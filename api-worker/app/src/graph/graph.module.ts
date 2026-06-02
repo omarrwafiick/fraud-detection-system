@@ -1,8 +1,8 @@
-import { Global, Module, OnApplicationShutdown } from '@nestjs/common';
+import { Global, Module, OnApplicationShutdown, Inject } from '@nestjs/common';
 import { GraphService } from './graph.service';
 import neo4j, { Driver } from 'neo4j-driver';
 import { GraphController } from './graph.controller';
-export const NEO4J_DRIVER = 'NEO4J_DRIVER';
+import { NEO4J_DRIVER } from './constants/graph.constants';
 
 @Global()
 @Module({
@@ -21,11 +21,11 @@ export const NEO4J_DRIVER = 'NEO4J_DRIVER';
     },
     GraphService
   ],
-  exports: [GraphService],
+  exports: [GraphService, NEO4J_DRIVER],
   controllers: [GraphController],
 })
 export class GraphModule implements OnApplicationShutdown {
-  constructor(private readonly driver: Driver) {}
+  constructor(@Inject(NEO4J_DRIVER) private readonly driver: Driver) {} 
   
   async onApplicationShutdown() {
     await this.driver.close();

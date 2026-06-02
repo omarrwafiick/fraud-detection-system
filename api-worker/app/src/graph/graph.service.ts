@@ -1,7 +1,7 @@
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
-import { NEO4J_DRIVER } from './graph.module';
 import neo4j, { Driver } from 'neo4j-driver';
 import { SyncTransactionDto } from './dtos/syncTransaction.dto';
+import { NEO4J_DRIVER } from './constants/graph.constants';
 
 @Injectable()
 export class GraphService implements OnModuleInit {
@@ -56,7 +56,7 @@ export class GraphService implements OnModuleInit {
         }
     }
 
-    async getAccountNetwork(tenantId: number, accountId: string): Promise<any[]> {
+    async getAccountNetwork(tenantId: number, accountId: string, limit: number = 50): Promise<any[]> {
         const session = this.neo4jDriver.session();
         const cypher = `
             MATCH (target:Account {id: $accountId, tenantId: $tenantId})-[r:TRANSACTED_WITH]-(neighbor:Account)
@@ -66,13 +66,14 @@ export class GraphService implements OnModuleInit {
                 r.status AS status,
                 r.id AS transactionId
             ORDER BY r.timestamp DESC 
-            LIMIT 50
+            LIMIT $limit
         `;
 
         try {
             const result = await session.run(cypher, { 
             tenantId: neo4j.int(tenantId), 
-            accountId 
+            accountId, 
+            limit: neo4j.int(limit)
             });
             return result.records.map(record => ({
             connectedAccount: record.get('connectedAccount'),
@@ -85,13 +86,12 @@ export class GraphService implements OnModuleInit {
         }
     }
 
-    async getDegreesOfSeparationFromFraud(tenantId: number, accountId: string)
+    async getDegreesOfSeparationFromFraud(tenantId: number, accountId: string, hops: number = 3)
         : Promise<{ hasRiskPath: boolean; degrees: number }> {
         const session = this.neo4jDriver.session();
-        // 3 hops with a rejected transactoion has serious issues
         const cypher = `
             MATCH p = shortestPath(
-            (src:Account {id: $accountId, tenantId: $tenantId})-[:TRANSACTED_WITH*1..3]-(bad:Account)
+            (src:Account {id: $accountId, tenantId: $tenantId})-[:TRANSACTED_WITH*1..$hops]-(bad:Account)
             )
             WHERE ANY(r IN relationships(p) WHERE r.status = 'REJECTED')
             RETURN length(p) AS degrees
@@ -101,7 +101,8 @@ export class GraphService implements OnModuleInit {
         try {
             const result = await session.run(cypher, { 
                 tenantId: neo4j.int(tenantId), 
-                accountId 
+                accountId, 
+                hops: neo4j.int(hops)
             });
             
             if (result.records.length === 0) {
@@ -117,18 +118,19 @@ export class GraphService implements OnModuleInit {
         }
     }
 
-    async detectTransactionCycles(tenantId: number, accountId: string): Promise<boolean> {
+    async detectTransactionCycles(tenantId: number, accountId: string, maxHops: number = 4): Promise<boolean> {
         const session = this.neo4jDriver.session();
         
         const cypher = `
-            MATCH p = (start:Account {id: $accountId, tenantId: $tenantId})-[:TRANSACTED_WITH*2..4]->(start)
+            MATCH p = (start:Account {id: $accountId, tenantId: $tenantId})-[:TRANSACTED_WITH*2..$maxHops]->(start)
             RETURN count(p) > 0 AS isInLoop
         `;
 
         try {
             const result = await session.run(cypher, { 
                 tenantId: neo4j.int(tenantId), 
-                accountId 
+                accountId, 
+                maxHops: neo4j.int(maxHops)
             });
             return result.records[0].get('isInLoop');
         } finally {
@@ -152,6 +154,47 @@ export class GraphService implements OnModuleInit {
             deviceId 
             });
             return result.records.map(record => record.get('linkedAccount'));
+        } finally {
+            await session.close();
+        }
+    }
+
+    async updateTransactionStatus(transactionId: string, tenantId: number, newStatus: string): Promise<void> {
+        const session = this.neo4jDriver.session();
+        
+        const cypher = `
+            MATCH ()-[t:TRANSACTED_WITH]->()
+            WHERE t.id = $transactionId AND t.tenantId = $tenantId
+            SET t.status = $newStatus, t.updatedAt = datetime()
+        `;
+
+        try {
+            await session.run(cypher, {
+            transactionId,
+            tenantId: neo4j.int(tenantId),
+            newStatus,
+            });
+        } finally {
+            await session.close();
+        }
+    }
+
+    async hasHighValueTransactions(tenantId: number, accountId: string, threshold: number): Promise<boolean> {
+        const session = this.neo4jDriver.session();
+        
+        const cypher = `
+            MATCH (a:Account {id: $accountId, tenantId: $tenantId})-[r:TRANSACTED_WITH]->()
+            WHERE r.amount >= $threshold
+            RETURN r LIMIT 1
+        `;
+
+        try {
+            const result = await session.run(cypher, { 
+            tenantId: neo4j.int(tenantId), 
+            accountId, 
+            threshold 
+            });
+            return result.records.length > 0;
         } finally {
             await session.close();
         }

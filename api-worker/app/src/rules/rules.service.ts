@@ -65,7 +65,7 @@ export class RulesService {
         return newRule.id;
     }
 
-    private getSeverityString(
+    getSeverityString(
         severity: RuleSeverity | string,
     ): { key: RuleSeverity | string; value: string } {
         switch (String(severity).toUpperCase()) {

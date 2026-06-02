@@ -16,13 +16,14 @@ export class Transactions {
   @JoinColumn({ name: 'tenantId' })
   tenant: Tenant;
 
-  @Column()
-  ruleId: number;
+  @Column({ nullable: true })
+  ruleId?: number | null;
 
   @ManyToOne(() => Tenant, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'ruleId' })
-  rule: Rule;
+  rule?: Rule;
 
+  @Index()
   @Column()
   transaction_id: string;
 

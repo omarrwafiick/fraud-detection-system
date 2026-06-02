@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Transactions } from './entities/transactions.entity';
 import { AnalyticsSummaryResponseDto } from 'src/analytics/dtos/analyticsVolumeSummary.dto';
+import { CreateTransactionDto } from './dtos/createTransaction.dto';
 
 @Injectable()
 export class TransactionsService {
@@ -80,5 +81,23 @@ export class TransactionsService {
       },
       generatedAt: Date.now(),
     };
+  }
+
+  async saveTransactionEvaluationResult(incomingTx: CreateTransactionDto): Promise<Transactions> {
+    return this.repository.save({
+      transaction_id: incomingTx.transaction_id,
+      tenantId: incomingTx.tenantId,
+      amount: incomingTx.amount,
+      amountUnit: incomingTx.amountUnit,
+      currency: incomingTx.currency,
+      sender_user_id: incomingTx.sender_user_id,
+      external_sender_account_id: incomingTx.external_sender_account_id,
+      sender_device_id: incomingTx.sender_device_id,
+      sender_ip_address: incomingTx.sender_ip_address,
+      external_receiver_account_id: incomingTx.external_receiver_account_id,
+      timestamp: incomingTx.timestamp,
+      status: incomingTx.status,
+      RuleId: incomingTx.ruleId,
+    });
   }
 }

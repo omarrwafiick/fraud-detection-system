@@ -10,7 +10,6 @@ import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'node:path';
 import { ConfigModule } from '@nestjs/config';
-import { SyncCheckModule } from './sync-check/sync-check.module';
 import { ApikeyModule } from './apikey/apikey.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
@@ -21,6 +20,7 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { ProfileModule } from './profile/profile.module';
 import { TransactionsModule } from './transactions/transactions.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
@@ -47,7 +47,6 @@ import { TransactionsModule } from './transactions/transactions.module';
       logging: process.env.ENV_MODE === 'development',
       autoLoadEntities: true,
     }),
-    SyncCheckModule,
     ThrottlerModule.forRoot([{
       ttl: 60000, // 1 minute
       limit: 10,   // 10 requests per minute globally
@@ -66,6 +65,7 @@ import { TransactionsModule } from './transactions/transactions.module';
     }),
     ProfileModule,
     TransactionsModule,
+    EventEmitterModule.forRoot(),
   ],
   controllers: [],
   providers: [

@@ -1,10 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { Case, CaseSeverity, CaseStatus, TriggerType } from './entities/case.entity';
+import { Case, CaseStatus, TriggerType } from './entities/case.entity';
 import { GetCaseDto } from './dto/getCases.dto';
 import { UpdateCaseDto } from './dto/updateCase.dto';
 import { TenantService } from 'src/tenant/tenant.service';
 import { InjectRepository } from '@nestjs/typeorm';
+import { CreateCaseDto } from './dto/createCase.dto';
 
 @Injectable()
 export class CasesService {
@@ -31,7 +32,6 @@ export class CasesService {
             return {
                 id: caseEntity.id,
                 status: this.getCaseStatus(caseEntity.status).value,
-                severity: this.getCaseSeverity(caseEntity.severity).value,
                 triggerType: this.getTriggerType(caseEntity.triggerType).value,
                 suspectEntityId: caseEntity.suspectEntityId,
                 metadata: caseEntity.metadata,
@@ -65,6 +65,19 @@ export class CasesService {
         }
     }
 
+    async createCase(payload: CreateCaseDto): Promise<Case> {
+        const newCase = this.repository.create({
+            tenantId: payload.tenantId,
+            transactionId: payload.transactionId,
+            triggerType: payload.triggerType,
+            suspectEntityId: payload.suspectEntityId,
+            metadata: payload.metadata,
+            resolutionNotes: payload.resolutionNotes
+        });
+
+        return await this.repository.save(newCase);
+    }
+
     private getCaseStatus(
         status: CaseStatus | string,
     ): { key: string; value: string } {
@@ -84,27 +97,6 @@ export class CasesService {
             case CaseStatus.DISMISSED:
             case 'DISMISSED':
             return { key: CaseStatus.DISMISSED, value: 'Dismissed' };
-
-            default:
-            return { key: 'UNKNOWN', value: 'Unknown' };
-        }
-    }
-
-    private getCaseSeverity(
-        severity: CaseSeverity | string,
-    ): { key: string; value: string } {
-        switch (severity) {
-            case CaseSeverity.MEDIUM:
-            case 'MEDIUM':
-            return { key: CaseSeverity.MEDIUM, value: 'Medium' };
-
-            case CaseSeverity.HIGH:
-            case 'HIGH':
-            return { key: CaseSeverity.HIGH, value: 'High' };
-
-            case CaseSeverity.CRITICAL:
-            case 'CRITICAL':
-            return { key: CaseSeverity.CRITICAL, value: 'Critical' };
 
             default:
             return { key: 'UNKNOWN', value: 'Unknown' };

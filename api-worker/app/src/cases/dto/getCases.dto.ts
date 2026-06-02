@@ -3,8 +3,6 @@ export class GetCaseDto{
 
     status: string;
 
-    severity: string;
-
     triggerType: string; 
 
     suspectEntityId: string;

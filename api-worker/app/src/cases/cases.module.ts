@@ -8,6 +8,7 @@ import { TenantModule } from 'src/tenant/tenant.module';
 @Module({
   imports: [TypeOrmModule.forFeature([Case]), TenantModule],
   controllers: [CasesController],
-  providers: [CasesService]
+  providers: [CasesService],
+  exports: [CasesService],
 })
 export class CasesModule {}

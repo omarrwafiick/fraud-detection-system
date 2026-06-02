@@ -15,15 +15,16 @@ export class GraphController {
         const tenantId = (request.user as IUser).tenantId;
         return await this.graphService.getAccountNetwork(tenantId, accountId);
     }
-
-    @Get("account/:accountId/fraud/degrees")
-    async getDegreesOfSeparationFromFraud(
-        @Req() request: express.Request,
-        @Param() accountId: string,
-    ){
-        const tenantId = (request.user as IUser).tenantId;
-        return await this.graphService.getDegreesOfSeparationFromFraud(tenantId, accountId);
-    }
+    //Commented this endpoint out as it can exhaust your Neo4j connection pool as user refresh the UI
+    
+    // @Get("account/:accountId/fraud/degrees")
+    // async getDegreesOfSeparationFromFraud(
+    //     @Req() request: express.Request,
+    //     @Param() accountId: string,
+    // ){
+    //     const tenantId = (request.user as IUser).tenantId;
+    //     return await this.graphService.getDegreesOfSeparationFromFraud(tenantId, accountId);
+    // }
 
     @Get("device/:deviceId/shared-fingerprint")
     async getSharedFingerprintAccounts(
