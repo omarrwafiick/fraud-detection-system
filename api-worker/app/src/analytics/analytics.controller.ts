@@ -1,4 +1,4 @@
-import { Controller, Get, Req, UnauthorizedException, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, HttpCode, HttpStatus, Req, UnauthorizedException, UseGuards, UseInterceptors } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/common/guards/jwtAuth.guard';
 import { AnalyticsService } from './analytics.service';
 import { AnalyticsSummaryResponseDto } from './dtos/analyticsVolumeSummary.dto';
@@ -13,6 +13,7 @@ export class AnalyticsController {
     constructor(private readonly analyticsService: AnalyticsService){}
 
     @Get("summary")
+    @HttpCode(HttpStatus.OK)
     async getSummary(
         @Req() request: express.Request,
     ): Promise<AnalyticsSummaryResponseDto>{

@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Req, UnauthorizedException } from '@nestjs/common';
+import { Controller, Get, HttpCode, HttpStatus, Param, Req, UnauthorizedException } from '@nestjs/common';
 import { GraphService } from './graph.service';
 import * as express from 'express';
 import { IUser } from 'src/auth/interfaces/user.interface';
@@ -8,6 +8,7 @@ export class GraphController {
     constructor(private readonly graphService:GraphService){}
 
     @Get("account/:accountId/network")
+    @HttpCode(HttpStatus.OK)
     async getAccountNetwork(
         @Req() request: express.Request,
         @Param() accountId: string,
@@ -21,6 +22,7 @@ export class GraphController {
     //Commented this endpoint out as it can exhaust your Neo4j connection pool as user refresh the UI
     
     // @Get("account/:accountId/fraud/degrees")
+    // @HttpCode(HttpStatus.OK)
     // async getDegreesOfSeparationFromFraud(
     //     @Req() request: express.Request,
     //     @Param() accountId: string,
@@ -33,6 +35,7 @@ export class GraphController {
     // }
 
     @Get("device/:deviceId/shared-fingerprint")
+    @HttpCode(HttpStatus.OK)
     async getSharedFingerprintAccounts(
         @Req() request: express.Request,
         @Param() deviceId: string,

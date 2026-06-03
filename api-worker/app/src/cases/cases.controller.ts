@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Req, UnauthorizedException, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, Patch, Req, UnauthorizedException, UseGuards, UseInterceptors } from '@nestjs/common';
 import { CasesService } from './cases.service';
 import { UpdateCaseDto } from './dto/updateCase.dto';
 import { JwtAuthGuard } from 'src/common/guards/jwtAuth.guard';
@@ -14,6 +14,7 @@ export class CasesController {
     constructor(private readonly casesService: CasesService){}
 
     @Get("")
+    @HttpCode(HttpStatus.OK)
     async getFraudCasesList(
         @Req() request: express.Request,
     ): Promise<GetCaseDto[]>{
@@ -25,6 +26,7 @@ export class CasesController {
     }
 
     @Patch(":id")
+    @HttpCode(HttpStatus.OK)
     async updateCase(
         @Param() id: number, 
         @Body() payload: UpdateCaseDto

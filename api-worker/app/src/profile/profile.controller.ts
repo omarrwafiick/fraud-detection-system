@@ -1,4 +1,4 @@
-import { Controller, Get, Req, UnauthorizedException, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, HttpCode, HttpStatus, Req, UnauthorizedException, UseInterceptors } from '@nestjs/common';
 import { ProfileService } from './profile.service';
 import * as express from 'express';
 import { IUser } from 'src/auth/interfaces/user.interface';
@@ -12,6 +12,7 @@ export class ProfileController {
     ){}
 
     @Get("")
+    @HttpCode(HttpStatus.OK)
     async getProfile(
         @Req() request: express.Request,
     ){

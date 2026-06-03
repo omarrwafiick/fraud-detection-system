@@ -1,4 +1,4 @@
-import { Controller, Logger } from '@nestjs/common';
+import { Controller, HttpCode, HttpStatus, Logger } from '@nestjs/common';
 import { EventPattern, Payload, Ctx, KafkaContext } from '@nestjs/microservices';
 import { EvaluationService } from './evaluation.service';
 
@@ -9,6 +9,7 @@ export class EvaluationController {
   constructor(private readonly evaluationService: EvaluationService) {}
 
   @EventPattern('transactions.incoming')
+  @HttpCode(HttpStatus.CREATED)
   async handleIncomingTransaction(
     @Payload() message: any, 
     @Ctx() context: KafkaContext

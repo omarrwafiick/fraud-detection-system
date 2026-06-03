@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { SyncTransactionDto } from 'src/graph/dtos/syncTransaction.dto';
 import { GraphService } from 'src/graph/graph.service';
 
@@ -6,6 +6,7 @@ import { GraphService } from 'src/graph/graph.service';
 export class TransactionsController {
     constructor(private readonly graphService: GraphService){}
     @Post("sync-check")
+    @HttpCode(HttpStatus.CREATED)
     async syncTransaction(
         @Body() payload: SyncTransactionDto
     ){

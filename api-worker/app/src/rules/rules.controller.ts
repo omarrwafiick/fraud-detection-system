@@ -14,6 +14,7 @@ export class RulesController {
     constructor(private readonly rulesService: RulesService){}
 
     @Get("")
+    @HttpCode(HttpStatus.OK)
     async getRules(
         @Req() request: express.Request,
     ): Promise<GetRuleDto[]>
