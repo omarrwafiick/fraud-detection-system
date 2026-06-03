@@ -7,6 +7,8 @@ import { SignUpUserDto } from './dtos/signup.dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { TenantService } from 'src/tenant/tenant.service';
+import { RBACService } from './services/rbac.service';
+import { UserRoleWithPermissions } from './types/rbac.types';
 
 @Injectable()
 export class AuthService {
@@ -18,6 +20,7 @@ export class AuthService {
     private readonly tenantService: TenantService,
     private readonly jwtService: JwtService,
     private readonly dataSource: DataSource,
+    private readonly rbacService: RBACService,
   ) {}
 
   async validateUserCredentials(payload: LoginUserDto): Promise<BaseUserResponseDto> {
@@ -35,7 +38,10 @@ export class AuthService {
         throw new UnauthorizedException('Invalid security credentials provided.');
     }
 
-    const token = await this.generateToken(user);
+    const userRoles = await this.rbacService.getUserRolesWithPermissions(user.id);
+
+    const token = await this.generateToken(user, this.rbacService.formatRolesWithPermissions(userRoles));
+    
     return { user, token };
   }
 
@@ -60,15 +66,25 @@ export class AuthService {
         firstname: payload.firstname,
         lastname: payload.lastname,
         email: payload.email,
+        
         passwordHash: hashedPassword,
         tenantId: newTenant.id,
       });
 
-      await userRepo.save(newUser);
+      const savedUser = await userRepo.save(newUser);
 
+      if (!savedUser){
+        throw new ConflictException('Failed to create user account, please try again later');
+      }
+
+      const savedRoles = await this.rbacService.addUserToDefaultRole(savedUser.id, entityManager);
+
+      if(!savedRoles){
+        throw new ConflictException("User roles failed to be created");
+      }
+      
       return {
         user: {
-          role: newUser.role,
           firstname: newUser.firstname,
           lastname: newUser.lastname,
           tenantId: newUser.tenantId,
@@ -81,15 +97,20 @@ export class AuthService {
     const user = await this.repository.findOne({ where: { id: userId } });
 
     if (!user){
-        throw new UnauthorizedException('Session refresh rejected.');
+      throw new UnauthorizedException('Session refresh rejected.');
     }
 
-    return this.generateToken(user);
+    const userRoles = await this.rbacService.getUserRolesWithPermissions(user.id);
+
+    return await this.generateToken(user, this.rbacService.formatRolesWithPermissions(userRoles));
   }
 
-  private async generateToken(user: User): Promise<string> {
+  private async generateToken(
+    user: User, 
+    roleAndPermissions: UserRoleWithPermissions[]
+  ): Promise<string> {
     return this.jwtService.signAsync({
-      roles: [user.role],
+      roles: [...roleAndPermissions],
       tenantId: user.tenantId,
       sub: user.id,
       email: user.email,

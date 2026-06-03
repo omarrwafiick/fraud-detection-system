@@ -1,4 +1,4 @@
-import { Role } from "../entities/user.entity";
+import { UserRoleWithPermissions } from "../types/rbac.types";
 
 export interface IUser{
     id: number;
@@ -7,7 +7,7 @@ export interface IUser{
     lastname: string;
     email: string;
     passwordHash: string;
-    role: Role;
+    roles?: UserRoleWithPermissions[];
     createdAt: Date;
     updatedAt: Date;
 }

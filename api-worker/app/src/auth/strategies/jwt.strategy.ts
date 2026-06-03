@@ -4,7 +4,7 @@ import { Strategy } from 'passport-jwt';
 import { CookieService } from 'src/common/cookies/cookie';
 import * as express from 'express';
 import { IUser } from '../interfaces/user.interface';
-import { Role } from '../entities/user.entity';
+import { UserRoleWithPermissions } from '../types/rbac.types';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
@@ -16,14 +16,15 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     });
   }
 
-  async validate(payload: { sub: string; email: string; role: Role, tenantId: number }): Promise<Partial<IUser>> {
+  async validate(payload: { sub: string; email: string; roles: UserRoleWithPermissions[], tenantId: number }
+  ): Promise<Partial<IUser>> {
     if (!payload) {
       throw new UnauthorizedException('Invalid or expired authentication session.');
     }
     return {
       id: Number(payload.sub),
       email: payload.email,
-      role: payload.role,
+      roles: payload.roles,
       tenantId: payload.tenantId,
     };
   }
