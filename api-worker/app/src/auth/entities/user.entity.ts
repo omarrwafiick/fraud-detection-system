@@ -7,15 +7,11 @@ import {
   UpdateDateColumn, 
   Index, 
   ManyToOne, 
-  JoinColumn 
+  JoinColumn, 
+  OneToMany
 } from 'typeorm';
 import { IUser } from '../interfaces/user.interface';
-
-
-export enum Role {
-  'ANALYST'='ANALYST',
-  'ADMIN'='ADMIN'
-}
+import { UserRoles } from './userRoles.pivot';
 
 @Entity('users')
 @Index(['tenantId', 'email'], { unique: true })
@@ -42,8 +38,8 @@ export class User implements IUser {
   @Column({ type: 'varchar', length: 255 })
   passwordHash: string;
 
-  @Column({ type: 'enum', enum: Role, default: Role.ANALYST })
-  role: Role;
+  @OneToMany(() => UserRoles, userRoles => userRoles.user)
+  userRoles: UserRoles[];
 
   @CreateDateColumn()
   createdAt: Date;
