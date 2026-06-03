@@ -3,7 +3,7 @@ version: '3.8'
 services:
   api-gateway:
     build:
-      context: ./api-gateway
+      context: ../api-gateway/app
       dockerfile: Dockerfile
     container_name: fraud_api_gateway
     restart: always
@@ -18,7 +18,7 @@ services:
 
   api-worker:
     build:
-      context: ./api-worker
+      context: ../api-worker/app
       dockerfile: Dockerfile
     container_name: fraud_api_worker
     restart: always

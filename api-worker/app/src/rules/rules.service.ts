@@ -5,6 +5,7 @@ import { GetRuleDto } from './dtos/getRule.dto';
 import { CreateRuleDto } from './dtos/createRule.dto';
 import { TenantService } from 'src/tenant/tenant.service';
 import { InjectRepository } from '@nestjs/typeorm';
+import { RequestPaginatorDto } from 'src/common/dtos/request-paginator.dto';
 
 @Injectable()
 export class RulesService {
@@ -14,11 +15,35 @@ export class RulesService {
         private readonly tenantService: TenantService,
     ){}
 
-    async getRules(tenantId: number): Promise<GetRuleDto[]> {
+    async getRules(tenantId: number, paginator: RequestPaginatorDto): Promise<GetRuleDto[]> {
         const rules = await this.repository.find({
             where: {
                 tenantId
+            },
+            order: {
+                createdAt: paginator.sortOrder || 'DESC'
+            },
+            skip: (paginator.page - 1) * paginator.limit,
+            take: paginator.limit,
+        });
+
+        return rules.map(rule => {
+            return {
+                id: rule.id,
+                name: rule.name,
+                severity: this.getSeverityString(rule.severity).value,
+                isEnabled: rule.isEnabled,
+                createdAt: rule.createdAt,
+                updatedAt: rule.updatedAt,
             }
+        });
+    }
+
+    async getAllRules(tenantId: number): Promise<GetRuleDto[]> {
+        const rules = await this.repository.find({
+            where: {
+                tenantId
+            },
         });
 
         return rules.map(rule => {

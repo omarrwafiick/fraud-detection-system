@@ -35,7 +35,7 @@ export class EvaluationService {
       sender_device_id: data.sender.device_id,
     });
     
-    const allRules = await this.rulesService.getRules(tenantId);
+    const allRules = await this.rulesService.getAllRules(tenantId);
     const activeRules = allRules.filter(rule => rule.isEnabled);
 
     let ultimateStatus: 'APPROVED' | 'REJECTED' = 'APPROVED';

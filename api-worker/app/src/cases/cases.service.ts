@@ -6,6 +6,7 @@ import { UpdateCaseDto } from './dto/updateCase.dto';
 import { TenantService } from 'src/tenant/tenant.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateCaseDto } from './dto/createCase.dto';
+import { RequestPaginatorDto } from 'src/common/dtos/request-paginator.dto';
 
 @Injectable()
 export class CasesService {
@@ -15,7 +16,7 @@ export class CasesService {
         private readonly tenantService: TenantService,
     ){}
 
-    async getCases(tenantId: number): Promise<GetCaseDto[]>{
+    async getCases(tenantId: number, paginator: RequestPaginatorDto): Promise<GetCaseDto[]>{
         const isTenantExists = await this.tenantService.tenantExistsById(tenantId);
 
         if(!isTenantExists){
@@ -25,7 +26,12 @@ export class CasesService {
         const cases = await this.repository.find({
             where: {
                 tenantId
-            }
+            },
+            order: {
+                createdAt: paginator.sortOrder || 'DESC'
+            },
+            skip: (paginator.page - 1) * paginator.limit,
+            take: paginator.limit,
         });
 
         return cases.map(caseEntity => {

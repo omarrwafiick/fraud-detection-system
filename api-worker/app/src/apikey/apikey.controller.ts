@@ -1,4 +1,4 @@
-import { Controller, Get, HttpCode, HttpStatus, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, HttpCode, HttpStatus, Req, UnauthorizedException, UseGuards } from '@nestjs/common';
 import { ApikeyService } from './apikey.service';
 import * as express from 'express';
 import { JwtAuthGuard } from 'src/common/guards/jwtAuth.guard';
@@ -13,6 +13,9 @@ export class ApikeyController {
     @HttpCode(HttpStatus.CREATED)
     async generateApiKey(@Req() request: express.Request){
         const userId = (request.user as IUser).id;
+        if(!userId){
+            throw new UnauthorizedException("User ID not found in request context");
+        }
         return await this.apikeyService.createKey(userId);
     }
 }

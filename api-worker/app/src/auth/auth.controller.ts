@@ -30,6 +30,7 @@ export class AuthController {
   }
 
   @Post('signup')
+  @HttpCode(HttpStatus.CREATED)
   async signup(@Body() payload: SignUpUserDto) {
     return this.authService.signup(payload);
   }
