@@ -1,4 +1,4 @@
-import { Controller, All, Req, Res } from '@nestjs/common';
+import { Controller, All, Req, Res, HttpCode, HttpStatus } from '@nestjs/common';
 import * as express from 'express';
 import { ApiService, AllowedMethods } from './api.service';
 
@@ -7,6 +7,7 @@ export class ApiController {
   constructor(private readonly apiService: ApiService) {}
 
   @All(':version/*path')
+  @HttpCode(HttpStatus.OK)
   async handleIncomingRequests(
     @Req() req: express.Request,
     @Res() res: express.Response,
