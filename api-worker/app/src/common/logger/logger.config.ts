@@ -1,5 +1,20 @@
 import * as winston from 'winston';
 import { utilities as nestWinstonModuleUtilities } from 'nest-winston';
+import * as util from 'util';
+
+const devObjectFormatter = winston.format((info) => {
+  const { timestamp, level, message, context, ms, ...metadata } = info;
+  if (Object.keys(metadata).length > 0) {
+    const coloredMetadata = util.inspect(metadata, {
+      colors: true,
+      compact: false,
+      depth: null,
+      breakLength: 80,
+    });
+    info.message = `${message}\n${coloredMetadata}`;
+  }
+  return info;
+});
 
 export const loggerConfig = {
   transports: [
@@ -11,10 +26,10 @@ export const loggerConfig = {
         process.env.NODE_ENV === 'production'
           ? winston.format.json()
           : winston.format.combine(
-              winston.format.colorize(),
+              devObjectFormatter(),
               nestWinstonModuleUtilities.format.nestLike('FraudDetector', {
                 colors: true,
-                prettyPrint: true,
+                prettyPrint: false,
               }),
             ),
       ),
