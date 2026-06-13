@@ -1,15 +1,17 @@
 import { Routes } from '@angular/router';
+import { guestGuard } from './core/guards/guest-guard';
 
 export const routes: Routes = [
   { 
     path: '', 
     redirectTo: 'landing', 
-    pathMatch: 'full' 
+    pathMatch: 'full'
   },
   { 
     path: 'landing', 
     title: 'Welcome | Fraud Detection Platform',
-    loadComponent: () => import('./features/landing/landing.page').then(m => m.LandingPage) 
+    loadComponent: () => import('./features/landing/landing.page').then(m => m.LandingPage),
+    canActivate: [guestGuard]
   },
   { 
     path: 'auth', 

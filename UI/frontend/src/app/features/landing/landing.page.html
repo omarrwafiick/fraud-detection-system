@@ -1,23 +1,107 @@
-<app-header></app-header>
-<div class="page-layout">
-    <h2>Fraud Incident Ledger</h2>
+<div class="flex flex-col min-h-screen bg-bg-app text-txt-primary">
+  
+  <app-header></app-header>
 
-    <div class="filter-row">
-    <app-select
-        label="Filter by Severity"
-        [options]="severityOptions"
-        [selectedValues]="activeSeverityFilter()"
-        [multiple]="true"
-        (selectionChange)="onSeverityChanged($event)"
-    ></app-select>
-    </div>
+  <main class="flex-1 w-full max-w-6xl mx-auto px-6 py-12 flex flex-col gap-16 font-sans">
+    
+    <section class="text-center max-w-3xl mx-auto flex flex-col gap-4 mt-6">
+      <div class="inline-flex items-center gap-2 px-3 py-1 bg-brand-glow border border-brand-primary/30 rounded-full mx-auto">
+        <span class="w-1.5 h-1.5 rounded-full bg-status-info animate-pulse"></span>
+        <span class="text-[10px] uppercase font-mono tracking-widest text-brand-primary font-bold">Enterprise Security Core</span>
+      </div>
+      <h1 class="text-4xl sm:text-5xl font-bold tracking-tight bg-gradient-to-r from-txt-primary via-txt-secondary to-brand-primary bg-clip-text text-transparent">
+        Real-Time Financial Fraud Detection Platform
+      </h1>
+      <p class="text-base text-txt-secondary leading-relaxed">
+        Welcome to your operational dashboard. This unified management console is built to audit and evaluate transactional integrity at scale, tracking high-volume workflows cleanly across separate tenant entities.
+      </p>
+    </section>
 
-    <app-table
-    [columns]="tableColumns"
-    [data]="mockCases()"
-    [totalItems]="100"
-    [itemsPerPage]="10"
-    (filterChange)="onTableQueryChanged($event)"
-    ></app-table>
-    </div>
-<app-footer></app-footer>
+    <hr class="border-border-clean w-full m-0" />
+
+    <section class="flex flex-col gap-6">
+      <div class="flex flex-col gap-1">
+        <h2 class="text-xl font-bold tracking-tight">Core Platform Capabilities</h2>
+        <p class="text-xs text-txt-muted">Operational modules available inside your secure workspace.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-bg-surface border border-border-clean rounded-xl p-6 flex gap-4 transition-all duration-200 hover:border-border-clean/80 hover:bg-bg-surface-hover">
+          <div class="text-2xl p-3 bg-black/20 rounded-lg h-fit">📊</div>
+          <div class="flex flex-col gap-1.5">
+            <h3 class="text-base font-semibold text-txt-primary">Overview Metrics & Anomalous Trends</h3>
+            <p class="text-sm text-txt-secondary leading-relaxed">
+              Track live ledger metrics with sub-second performance. View transaction flows, processing distribution thresholds, and visual risk indicators to identify structural fraud trends early.
+            </p>
+          </div>
+        </div>
+
+        <div class="bg-bg-surface border border-border-clean rounded-xl p-6 flex gap-4 transition-all duration-200 hover:border-border-clean/80 hover:bg-bg-surface-hover">
+          <div class="text-2xl p-3 bg-black/20 rounded-lg h-fit">🛡️</div>
+          <div class="flex flex-col gap-1.5">
+            <h3 class="text-base font-semibold text-txt-primary">Incident Ledger & Case Management</h3>
+            <p class="text-sm text-txt-secondary leading-relaxed">
+              Audit granular security records directly. Evaluate automated status logs, transaction details, and tenant metrics within a secure workspace to triage risk and resolve incidents efficiently.
+            </p>
+          </div>
+        </div>
+
+        <div class="bg-bg-surface border border-border-clean rounded-xl p-6 flex gap-4 transition-all duration-200 hover:border-border-clean/80 hover:bg-bg-surface-hover">
+          <div class="text-2xl p-3 bg-black/20 rounded-lg h-fit">🕸️</div>
+          <div class="flex flex-col gap-1.5">
+            <h3 class="text-base font-semibold text-txt-primary">Network Graph Topology Visualizer</h3>
+            <p class="text-sm text-txt-secondary leading-relaxed">
+              Map and explore structural risk chains. Use multi-hop tracking, entity fingerprinting patterns, and relationship visualizers to quickly locate cycle-anomalies across connected accounts.
+            </p>
+          </div>
+        </div>
+
+        <div class="bg-bg-surface border border-border-clean rounded-xl p-6 flex gap-4 transition-all duration-200 hover:border-border-clean/80 hover:bg-bg-surface-hover">
+          <div class="text-2xl p-3 bg-black/20 rounded-lg h-fit">⚙️</div>
+          <div class="flex flex-col gap-1.5">
+            <h3 class="text-base font-semibold text-txt-primary">Rule Orchestrator Engine</h3>
+            <p class="text-sm text-txt-secondary leading-relaxed">
+              Deploy custom evaluation criteria dynamically. Adjust risk limits, define automation boundaries, and build custom rule sets tailored to your specific system profile constraints.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-bg-surface border border-border-clean rounded-xl p-6 md:p-8 flex flex-col gap-6">
+      <div class="flex flex-col gap-1">
+        <h2 class="text-xl font-bold tracking-tight">Onboarding Operational Instructions</h2>
+        <p class="text-xs text-txt-muted">Follow these standard operating procedures to begin system tracking:</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 relative">
+        <div class="flex flex-col gap-3">
+          <div class="technical-id w-fit text-xs px-2.5 py-1 font-bold text-brand-primary bg-brand-glow">STEP 01</div>
+          <h4 class="text-sm font-semibold text-txt-primary">Authenticate Instance Session</h4>
+          <p class="text-xs text-txt-secondary leading-relaxed">
+            Hover over the profile menu icon in the upper right. Select <strong>Authenticate Sign In</strong> or complete registration to provision a safe cryptographic token context.
+          </p>
+        </div>
+
+        <div class="flex flex-col gap-3">
+          <div class="technical-id w-fit text-xs px-2.5 py-1 font-bold text-status-warning bg-status-warning/10 text-status-warning">STEP 02</div>
+          <h4 class="text-sm font-semibold text-txt-primary">Review Automated Incidents</h4>
+          <p class="text-xs text-txt-secondary leading-relaxed">
+            Open the <strong>Incident Ledger</strong> from the side drawer menu. Use the global query filter bar to locate critical items requiring analyst intervention.
+          </p>
+        </div>
+
+        <div class="flex flex-col gap-3">
+          <div class="technical-id w-fit text-xs px-2.5 py-1 font-bold text-status-success bg-status-success/10 text-status-success">STEP 03</div>
+          <h4 class="text-sm font-semibold text-txt-primary">Tune System Rules</h4>
+          <p class="text-xs text-txt-secondary leading-relaxed">
+            Navigate to the <strong>Rule Orchestrator</strong>. Adjust conditions based on active fraud indicators to enforce tighter baseline protection metrics.
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <app-footer></app-footer>
+</div>

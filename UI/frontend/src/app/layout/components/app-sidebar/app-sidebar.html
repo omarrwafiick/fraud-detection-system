@@ -1,0 +1,39 @@
+<aside class="w-64 h-[calc(100vh-4rem)] bg-bg-surface border-r border-border-clean flex flex-col justify-between p-4 sticky top-16 font-sans select-none z-30">
+    <div class="flex flex-col gap-4">
+    @for (group of navigationStructure; track group.label) {
+        <div class="flex flex-col">
+        
+        <button
+            (click)="toggleGroup(group.label)"
+            class="w-full flex items-center justify-between text-[10px] font-bold text-txt-muted tracking-widest uppercase mb-2 px-3 py-1 hover:text-txt-primary transition-colors duration-150 text-left bg-transparent border-none cursor-pointer outline-none group"
+        >
+            <span>{{ group.label }}</span>
+            <span 
+            class="text-[8px] transition-transform duration-200 ease-in-out transform"
+            [class.rotate-270]="isGroupCollapsed(group.label)"
+            >
+            ▼
+            </span>
+        </button>
+
+        @if (!isGroupCollapsed(group.label)) {
+            <ul class="list-none p-0 m-0 flex flex-col gap-1 animate-fadeIn">
+            @for (item of group.items; track item.path) {
+                <li>
+                <a
+                    [routerLink]="item.path"
+                    routerLinkActive="bg-brand-primary text-white! border-brand-primary"
+                    [routerLinkActiveOptions]="{ exact: item.path.endsWith('summary') || item.path.endsWith('list') }"
+                    class="flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-txt-secondary border border-transparent rounded-md transition-all duration-150 hover:bg-bg-surface-hover hover:text-txt-primary"
+                >
+                    <span class="text-base flex-shrink-0">{{ item.icon }}</span>
+                    <span class="truncate">{{ item.label }}</span>
+                </a>
+                </li>
+            }
+            </ul>
+        }
+        </div>
+    }
+    </div>
+</aside>

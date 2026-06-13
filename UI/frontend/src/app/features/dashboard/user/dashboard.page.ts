@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { Header } from '../../../layout/components/header/header';
-import { Footer } from '../../../layout/components/footer/footer';
-import { Sidebar } from '../../../layout/components/sidebar/sidebar';
+import { AppHeader } from '../../../layout/components/app-header/app-header';
+import { AppFooter } from '../../../layout/components/app-footer/app-footer';
+import { AppSidebar } from '../../../layout/components/app-sidebar/app-sidebar';
 
 @Component({
   selector: 'app-dashboard-page',
-  imports: [RouterOutlet, Header, Footer, Sidebar],
+  imports: [RouterOutlet, AppHeader, AppFooter, AppSidebar],
   templateUrl: './dashboard.page.html',
   styleUrl: './dashboard.page.css',
 })
