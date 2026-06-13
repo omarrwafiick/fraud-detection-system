@@ -11,5 +11,5 @@
   "include": [
     "src/**/*.d.ts",
     "src/**/*.spec.ts"
-  ]
+, "src/app/features/auth/pages/login/login.page.spec.ts", "src/app/features/auth/pages/signup/signup.page.spec.ts", "src/app/features/dashboard/user/analytics/pages/summary/summary.page.spec.ts"  ]
 }
