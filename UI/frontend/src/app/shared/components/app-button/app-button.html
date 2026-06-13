@@ -1,0 +1,17 @@
+<button 
+    [type]="type()" 
+    [disabled]="disabled() || loading()"
+    class="font-sans font-semibold text-sm px-4 py-2.5 rounded-md border border-transparent cursor-pointer inline-flex items-center justify-center gap-2 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
+    [ngClass]="{
+    'bg-brand-primary text-white hover:bg-blue-600': variant() === 'primary',
+    'bg-bg-surface-hover text-txt-primary border-border-clean hover:bg-border-clean': variant() === 'secondary',
+    'bg-status-critical text-white hover:brightness-110': variant() === 'danger',
+    'bg-status-success text-white hover:brightness-110': variant() === 'success'
+    }"
+>
+    @if (loading()) {
+    <span class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+    } @else {
+    <ng-content></ng-content>
+    }
+</button>

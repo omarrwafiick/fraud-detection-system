@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TextArea } from './text-area';
+import { AppInput } from './app-input';
 
-describe('TextArea', () => {
-  let component: TextArea;
-  let fixture: ComponentFixture<TextArea>;
+describe('AppInput', () => {
+  let component: AppInput;
+  let fixture: ComponentFixture<AppInput>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TextArea]
+      imports: [AppInput]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(TextArea);
+    fixture = TestBed.createComponent(AppInput);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

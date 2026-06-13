@@ -1,3 +1,23 @@
 <app-header></app-header>
-<p>landing works!</p>
+<div class="page-layout">
+    <h2>Fraud Incident Ledger</h2>
+
+    <div class="filter-row">
+    <app-select
+        label="Filter by Severity"
+        [options]="severityOptions"
+        [selectedValues]="activeSeverityFilter()"
+        [multiple]="true"
+        (selectionChange)="onSeverityChanged($event)"
+    ></app-select>
+    </div>
+
+    <app-table
+    [columns]="tableColumns"
+    [data]="mockCases()"
+    [totalItems]="100"
+    [itemsPerPage]="10"
+    (filterChange)="onTableQueryChanged($event)"
+    ></app-table>
+    </div>
 <app-footer></app-footer>
