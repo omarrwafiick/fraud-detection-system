@@ -42,7 +42,10 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
       username: process.env.DATABASE_USERNAME || 'fraud_admin',
       password: process.env.DATABASE_PW || 'super_secure_password_2026',
       database: process.env.DATABASE_NAME || 'fraud_detection_db',
-      entities: [join(__dirname, '**', '*.entity.{ts,js}')],
+      entities: [
+        join(__dirname, '**', '*.entity.{ts,js}'), 
+        join(__dirname, '/../../**/*.pivot.ts'), 
+      ],
       synchronize: process.env.ENV_MODE ? process.env.ENV_MODE === 'development' : true,
       logging: process.env.ENV_MODE === 'development',
       autoLoadEntities: true,
