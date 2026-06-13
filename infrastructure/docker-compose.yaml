@@ -1,14 +1,14 @@
 version: '3.8'
 
 services:
-  nginxv:
+  nginx:
     image: nginx:alpine
     container_name: fraud_nginx
     restart: always
     ports:
       - "80:80"
     volumes:
-      - ./reverse-proxy/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ../reverse-proxy/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     networks:
       - fraud-network
 

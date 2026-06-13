@@ -12,9 +12,10 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
           client: {
             clientId: process.env.KAFKA_BROKER_ID || 'fraud-gateway-producer',
             brokers: [process.env.KAFKA_BROKER_URL || 'localhost:9092'],
-            connectionTimeout: 3000, // Drop the connection attempt after 3 seconds
+            connectionTimeout: 10000, // Drop the connection attempt after 10 seconds
             retry: {
-              retries: 3, // Don't loop infinitely; fail fast after 3 fast attempts
+              initialRetryTime: 300, // Wait 300ms before retrying a failed attempt
+              retries: 8,            // Give it 8 solid back-off attempts before giving up
             },
           },
           producer: {

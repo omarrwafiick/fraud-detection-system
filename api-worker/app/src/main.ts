@@ -19,13 +19,13 @@ async function bootstrap() {
   configPipes(app);
   configFilters(app);
   configPrivateAccess(app);
-  //configKafkaConsumer(app);
+  configKafkaConsumer(app);
 
   const port = process.env.PORT || 3001;
 
   app.enableShutdownHooks();
 
-  //await app.startAllMicroservices();
+  await app.startAllMicroservices();
   await app.listen(port);
   
   const logger = new Logger('BOOTSTRAP');
