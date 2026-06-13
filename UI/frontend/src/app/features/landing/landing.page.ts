@@ -1,13 +1,12 @@
 import { Component } from '@angular/core';
-import { Header } from '../../layout/components/header/header';
-import { Footer } from '../../layout/components/footer/footer';
+import { AppHeader } from '../../layout/components/app-header/app-header';
+import { AppFooter } from '../../layout/components/app-footer/app-footer';
 
 @Component({
   selector: 'app-landing-page',
-  imports: [Header, Footer],
+  imports: [AppHeader, AppFooter],
   templateUrl: './landing.page.html',
   styleUrl: './landing.page.css',
 })
 export class LandingPage {
-
 }

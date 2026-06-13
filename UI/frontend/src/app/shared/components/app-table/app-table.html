@@ -1,0 +1,40 @@
+<div class="bg-bg-surface border border-border-clean rounded-lg p-5">
+    <div class="mb-4 max-w-xs">
+    <app-input placeholder="Global query scan..." [value]="searchQuery()" (valueChange)="onSearch($event)"></app-input>
+    </div>
+
+    <div class="overflow-x-auto w-full">
+    <table class="w-full border-collapse text-left">
+        <thead>
+        <tr class="bg-black/15">
+            @for (col of columns(); track col.key) {
+            <th class="text-txt-secondary text-xs font-semibold uppercase tracking-wider p-3 border-b-2 border-border-clean">{{ col.header }}</th>
+            }
+        </tr>
+        </thead>
+        <tbody>
+        @for (row of data(); track row.id) {
+            <tr class="hover:bg-bg-surface-hover">
+            @for (col of columns(); track col.key) {
+                <td [ngClass]="col.isMono ? 'technical-id' : 'font-sans text-txt-primary p-3.5 border-b border-border-clean text-sm'">
+                {{ row[col.key] }}
+                </td>
+            }
+            </tr>
+        } @empty {
+            <tr>
+            <td [attr.colspan]="columns().length" class="text-center text-txt-muted p-8 text-sm">No analytics tracking matches found.</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+    </div>
+
+    <div class="flex justify-between items-center mt-4 pt-3 border-t border-border-clean">
+    <span class="text-xs text-txt-secondary">Page {{ currentPage() }} of {{ totalPages() }}</span>
+    <div class="flex gap-2">
+        <app-button variant="secondary" [disabled]="currentPage() === 1" (click)="changePage(-1)">Prev</app-button>
+        <app-button variant="secondary" [disabled]="currentPage() === totalPages()" (click)="changePage(1)">Next</app-button>
+    </div>
+    </div>
+</div>

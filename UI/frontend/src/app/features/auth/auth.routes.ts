@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { guestGuard } from '../../core/guards/guest-guard';
 
 export const AUTH_ROUTES: Routes = [
   {
@@ -21,6 +22,7 @@ export const AUTH_ROUTES: Routes = [
         title: 'Login Page', 
         loadComponent: () => import('./pages/api-key/api-key.page').then(m => m.ApiKeyPage) 
       },
-    ]
+    ],
+    canActivate: [guestGuard]
   }
 ];

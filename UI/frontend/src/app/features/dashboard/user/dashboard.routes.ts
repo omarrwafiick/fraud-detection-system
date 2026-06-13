@@ -3,6 +3,7 @@ import { provideState } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
 import { casesReducer } from './cases/state/cases.reducer';
 import { CasesEffects } from './cases/state/cases.effects';
+import { authGuard } from '../../../core/guards/auth-guard';
 
 export const DASHBOARD_ROUTES: Routes = [
   {
@@ -67,6 +68,7 @@ export const DASHBOARD_ROUTES: Routes = [
           }
         ]
       }
-    ]
+    ],
+    canActivate: [authGuard]
   }
 ];

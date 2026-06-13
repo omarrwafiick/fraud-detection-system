@@ -1,0 +1,62 @@
+<header class="w-full h-16 bg-bg-surface border-b border-border-clean px-6 flex items-center justify-between sticky top-0 z-40 font-sans">
+    <div class="flex items-center gap-3 cursor-pointer" routerLink="/">
+    <div class="w-8 h-8 bg-brand-primary rounded-md flex items-center justify-center font-bold text-white tracking-wider">
+        F
+    </div>
+    <span class="text-txt-primary font-bold tracking-tight text-lg">
+        {{ appTitle() }}
+    </span>
+    </div>
+
+    <div 
+    class="relative py-2"
+    (mouseenter)="isMenuOpen.set(true)"
+    (mouseleave)="isMenuOpen.set(false)"
+    >
+    <div class="flex items-center gap-3 cursor-pointer group">
+        <div class="text-right hidden sm:block">
+        <p class="text-xs font-semibold text-txt-primary group-hover:text-brand-primary transition-colors duration-150">
+            {{ isLoggedIn() ? userDisplayName() : 'Guest Operational Mode' }}
+        </p>
+        <span class="text-[10px] text-txt-muted tracking-wider uppercase font-mono">
+            {{ isLoggedIn() ? 'Authenticated' : 'Unauthenticated' }}
+        </span>
+        </div>
+        <div class="w-8 h-8 rounded-full bg-bg-surface-hover border border-border-clean flex items-center justify-center text-txt-secondary group-hover:border-brand-primary transition-all duration-150">
+        👤
+        </div>
+    </div>
+
+    @if (isMenuOpen()) {
+        <div class="absolute right-0 top-full w-56 bg-bg-surface border border-border-clean rounded-lg shadow-2xl p-2 z-50 animate-fadeIn mt-1">
+        @if (isLoggedIn()) {
+            <div class="px-3 py-2 border-b border-border-clean mb-1">
+            <p class="text-xs text-txt-muted font-medium">Session Operator Identity</p>
+            <p class="text-xs text-txt-primary font-bold truncate">{{ userDisplayName() }}</p>
+            </div>
+            <button 
+            (click)="logoutClick.emit(); isMenuOpen.set(false)"
+            class="w-full text-left text-xs font-semibold text-status-critical bg-status-critical/10 hover:bg-status-critical hover:text-white px-3 py-2.5 rounded-md transition-all duration-150 cursor-pointer"
+            >
+            Logout
+            </button>
+        @} @else {
+            <a 
+            routerLink="/auth/login" 
+            (click)="isMenuOpen.set(false)"
+            class="block w-full text-left text-xs font-semibold text-txt-primary hover:bg-bg-surface-hover px-3 py-2.5 rounded-md transition-all duration-150"
+            >
+            LogIn
+            </a>
+            <a 
+            routerLink="/auth/signup" 
+            (click)="isMenuOpen.set(false)"
+            class="block w-full text-left text-xs font-semibold text-brand-primary hover:bg-brand-glow px-3 py-2.5 rounded-md transition-all duration-150 mt-1"
+            >
+            Signup
+            </a>
+        }
+        </div>
+    }
+    </div>
+</header>
