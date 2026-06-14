@@ -2,25 +2,31 @@ import { inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-export abstract class GenericApiService<T> {
+export interface ApiResponse<T = any> {
+  statusCode: number;
+  message: string | string[];
+  data: T;
+}
+
+export abstract class GenericApiService {
   protected http = inject(HttpClient);
   
   protected abstract get basePath(): string;
 
-  getAll(): Observable<T[]> {
-    return this.http.get<T[]>(this.basePath);
+  getAll<T>(): Observable<ApiResponse<T>> {
+    return this.http.get<ApiResponse<T>>(this.basePath);
   }
 
-  getById(id: string | number): Observable<T> {
-    return this.http.get<T>(`${this.basePath}/${id}`);
+  getById<T>(id: string | number): Observable<ApiResponse<T>> {
+    return this.http.get<ApiResponse<T>>(`${this.basePath}/${id}`);
   }
 
-  create(item: Partial<T>): Observable<T> {
-    return this.http.post<T>(this.basePath, item);
+  create<T>(item: Partial<T>): Observable<ApiResponse<T>> {
+    return this.http.post<ApiResponse<T>>(this.basePath, item);
   }
 
-  update(id: string | number, item: Partial<T>): Observable<T> {
-    return this.http.put<T>(`${this.basePath}/${id}`, item);
+  update<T>(id: string | number, item: Partial<T>): Observable<ApiResponse<T>> {
+    return this.http.put<ApiResponse<T>>(`${this.basePath}/${id}`, item);
   }
 
   delete(id: string | number): Observable<void> {

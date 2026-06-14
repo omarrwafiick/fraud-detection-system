@@ -4,11 +4,13 @@ import { provideEffects } from '@ngrx/effects';
 import { casesReducer } from './cases/state/cases.reducer';
 import { CasesEffects } from './cases/state/cases.effects';
 import { authGuard } from '../../../core/guards/auth-guard';
+import { userGuard } from '../../../core/guards/user-guard';
 
 export const DASHBOARD_ROUTES: Routes = [
   {
     path: '',
     loadComponent: () => import('./dashboard.page').then(m => m.DashboardPage),
+    canActivateChild: [userGuard],
     children: [
       { path: '', redirectTo: 'analytics', pathMatch: 'full' },
       {
