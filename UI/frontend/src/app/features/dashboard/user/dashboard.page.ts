@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { AppHeader } from '../../../layout/components/app-header/app-header';
 import { AppFooter } from '../../../layout/components/app-footer/app-footer';
-import { AppSidebar } from '../../../layout/components/app-sidebar/app-sidebar';
+import { AppSidebar } from '../../../layout/components/dashboard/user/app-sidebar/app-sidebar';
 
 @Component({
   selector: 'app-dashboard-page',

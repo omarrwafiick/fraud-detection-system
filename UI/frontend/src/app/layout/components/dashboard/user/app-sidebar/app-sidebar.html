@@ -12,7 +12,7 @@
             class="text-[8px] transition-transform duration-200 ease-in-out transform"
             [class.rotate-270]="isGroupCollapsed(group.label)"
             >
-            ▼
+            <lucide-icon [name]="ChevronDownClass" class="text-base flex-shrink-0 text-brand-primary"></lucide-icon>
             </span>
         </button>
 
@@ -26,7 +26,7 @@
                     [routerLinkActiveOptions]="{ exact: item.path.endsWith('summary') || item.path.endsWith('list') }"
                     class="flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-txt-secondary border border-transparent rounded-md transition-all duration-150 hover:bg-bg-surface-hover hover:text-txt-primary"
                 >
-                    <span class="text-base flex-shrink-0">{{ item.icon }}</span>
+                    <lucide-icon [name]="item.icon" class="text-base flex-shrink-0 text-brand-primary"></lucide-icon>
                     <span class="truncate">{{ item.label }}</span>
                 </a>
                 </li>
