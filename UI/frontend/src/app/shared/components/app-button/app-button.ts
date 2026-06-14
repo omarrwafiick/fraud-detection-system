@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, input } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 
 @Component({
   selector: 'app-button',
@@ -9,7 +9,9 @@ import { Component, input } from '@angular/core';
 })
 export class AppButton {
   type = input<'button' | 'submit' | 'reset'>('button');
+  text = input<string>('click');
   disabled = input<boolean>(false);
   loading = input<boolean>(false);
+  clicked = output<void>();
   variant = input<'primary' | 'secondary' | 'danger' | 'success'>('primary');
 }

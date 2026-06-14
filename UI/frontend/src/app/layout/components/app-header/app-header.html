@@ -23,7 +23,7 @@
         </span>
         </div>
         <div class="w-8 h-8 rounded-full bg-bg-surface-hover border border-border-clean flex items-center justify-center text-txt-secondary group-hover:border-brand-primary transition-all duration-150">
-        👤
+            <lucide-icon [name]="UserIconClass" class="text-base flex-shrink-0 text-brand-primary"></lucide-icon>
         </div>
     </div>
 
@@ -36,24 +36,35 @@
             </div>
             <button 
             (click)="logoutClick.emit(); isMenuOpen.set(false)"
-            class="w-full text-left text-xs font-semibold text-status-critical bg-status-critical/10 hover:bg-status-critical hover:text-white px-3 py-2.5 rounded-md transition-all duration-150 cursor-pointer"
+            class="flex w-full text-left text-xs font-semibold text-status-critical bg-status-critical/10 hover:bg-status-critical hover:text-white px-3 py-2.5 rounded-md transition-all duration-150 cursor-pointer"
             >
-            Logout
+                <lucide-icon [name]="LogoutIconClass" class="text-base flex-shrink-0 text-brand-primary"></lucide-icon>
+                <a class="ms-2 mt-1">Logout</a>
             </button>
         @} @else {
             <a 
             routerLink="/auth/login" 
             (click)="isMenuOpen.set(false)"
-            class="block w-full text-left text-xs font-semibold text-txt-primary hover:bg-bg-surface-hover px-3 py-2.5 rounded-md transition-all duration-150"
+            class="flex block w-full text-left text-xs font-semibold text-txt-primary hover:bg-bg-surface-hover px-3 py-2.5 rounded-md transition-all duration-150"
             >
-            LogIn
+                <lucide-icon [name]="LoginIconClass" class="text-base flex-shrink-0 text-brand-primary"></lucide-icon>
+                <a class="ms-2 mt-1">LogIn</a>
             </a>
             <a 
             routerLink="/auth/signup" 
             (click)="isMenuOpen.set(false)"
-            class="block w-full text-left text-xs font-semibold text-brand-primary hover:bg-brand-glow px-3 py-2.5 rounded-md transition-all duration-150 mt-1"
+            class="flex block w-full text-left text-xs font-semibold text-brand-primary hover:bg-brand-glow px-3 py-2.5 rounded-md transition-all duration-150 mt-1"
             >
-            Signup
+                <lucide-icon [name]="SignupIconClass" class="text-base flex-shrink-0 text-brand-primary"></lucide-icon>
+                <a class="ms-2 mt-1">Signup</a>
+            </a>
+            <a 
+            routerLink="/dashboard/user" 
+            (click)="isMenuOpen.set(false)"
+            class="flex block w-full text-left text-xs font-semibold text-brand-primary hover:bg-brand-glow px-3 py-2.5 rounded-md transition-all duration-150 mt-1"
+            >
+                <lucide-icon [name]="DashboardIconClass" class="text-base flex-shrink-0 text-brand-primary"></lucide-icon>
+                <a class="ms-2 mt-1">Dashboard</a>
             </a>
         }
         </div>
