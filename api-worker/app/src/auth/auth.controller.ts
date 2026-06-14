@@ -1,9 +1,13 @@
-import { Controller, Post, Body, Res, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Post, Body, Res, HttpCode, HttpStatus, UseGuards, Req, UnauthorizedException, UseInterceptors } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginUserDto } from './dtos/login.dto';
 import { SignUpUserDto } from './dtos/signup.dto';
 import * as express from 'express';
 import { RefreshTokenDto } from './dtos/refreshToken.dto';
+import { JwtAuthGuard } from 'src/common/guards/jwtAuth.guard';
+import { IUser } from './interfaces/user.interface';
+import { RBACService } from './services/rbac.service';
+import { CacheInterceptor } from '@nestjs/cache-manager';
 
 @Controller('v1/auth')
 export class AuthController {
@@ -16,7 +20,10 @@ export class AuthController {
     period: 7 * 24 * 60 * 60 * 1000, // 7 days
   };
 
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly rbacService: RBACService
+  ) {}
 
   @Post('login')
   @HttpCode(HttpStatus.OK)
@@ -65,9 +72,21 @@ export class AuthController {
     });
   }
 
+  @Post('permissions')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(CacheInterceptor)
+  async permissions(@Req() request: express.Request) {
+    const userId = (request.user as IUser).id;
+    if(!userId){
+      throw new UnauthorizedException("User ID not found in request context");
+    }
+    return await this.rbacService.getUserRolesWithPermissions(userId);
+  }
+
   @Post('logout')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async logout(@Res({ passthrough: true }) res: express.Response) {
+  logout(@Res({ passthrough: true }) res: express.Response) {
     res.clearCookie(this.ACCESS_TOKEN_COOKIE.name);
     res.clearCookie(this.REFRESH_TOKEN_COOKIE.name);
   }

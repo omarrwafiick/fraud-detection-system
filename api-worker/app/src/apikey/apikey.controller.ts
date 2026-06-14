@@ -2,7 +2,6 @@ import { Controller, Get, HttpCode, HttpStatus, Req, UnauthorizedException, UseG
 import { ApikeyService } from './apikey.service';
 import * as express from 'express';
 import { JwtAuthGuard } from 'src/common/guards/jwtAuth.guard';
-import { User } from 'src/auth/entities/user.entity';
 import { IUser } from 'src/auth/interfaces/user.interface';
 
 @Controller('apikey')
