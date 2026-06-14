@@ -1,5 +1,6 @@
 import { IsEmail, IsString, MinLength } from 'class-validator';
 import { User } from '../entities/user.entity';
+import { Tokens } from './tokens.dto';
 
 export class LoginUserDto {
   @IsEmail()
@@ -12,5 +13,5 @@ export class LoginUserDto {
 
 export class BaseUserResponseDto {
   user: Partial<User>;
-  token?: string;
+  tokens?: Tokens;
 }
