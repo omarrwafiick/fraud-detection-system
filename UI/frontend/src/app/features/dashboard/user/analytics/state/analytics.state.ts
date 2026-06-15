@@ -1,20 +1,14 @@
-export interface Case {
-  id: string;
-  title: string;
-  severity: 'low' | 'medium' | 'high' | 'critical';
-  status: 'open' | 'investigating' | 'resolved';
+export interface Analysis {
 }
 
-export interface CasesState {
-  items: Case[];
-  activeCaseId: string | null;
+export interface AnalysisState {
+  analysis: Partial<Analysis>;
   loading: boolean;
   error: string | null;
 }
 
-export const initialCasesState: CasesState = {
-  items: [],
-  activeCaseId: null,
+export const initialAnalysisState: AnalysisState = {
+  analysis: {},
   loading: false,
   error: null
 };
