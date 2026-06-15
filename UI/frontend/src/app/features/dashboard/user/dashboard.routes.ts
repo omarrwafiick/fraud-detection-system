@@ -5,8 +5,12 @@ import { casesReducer } from './cases/state/cases.reducer';
 import { CasesEffects } from './cases/state/cases.effects';
 import { authGuard } from '../../../core/guards/auth-guard';
 import { userGuard } from '../../../core/guards/user-guard';
+import { analysisReducer } from './analytics/state/analytics.reducer';
+import { AnalysisEffects } from './analytics/state/analytics.effects';
+import { rulesReducer } from './rules/state/rules.reducer';
+import { RulesEffects } from './rules/state/rules.effects';
 
-export const DASHBOARD_ROUTES: Routes = [
+export const DASHBOARD_USER_ROUTES: Routes = [
   {
     path: '',
     loadComponent: () => import('./dashboard.page').then(m => m.DashboardPage),
@@ -15,6 +19,10 @@ export const DASHBOARD_ROUTES: Routes = [
       { path: '', redirectTo: 'analytics', pathMatch: 'full' },
       {
         path: 'analytics',
+        providers: [
+          provideState({ name: 'analysisFeature', reducer: analysisReducer }),
+          provideEffects(AnalysisEffects),
+        ],
         children: [
           { path: '', redirectTo: 'summary', pathMatch: 'full' },
           { 
@@ -56,6 +64,10 @@ export const DASHBOARD_ROUTES: Routes = [
       },
       {
         path: 'rules',
+        providers: [
+          provideState({ name: 'rulesFeature', reducer: rulesReducer }),
+          provideEffects(RulesEffects),
+        ],
         children: [
           { path: '', redirectTo: 'list', pathMatch: 'full' },
           { 

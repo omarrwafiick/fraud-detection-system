@@ -22,7 +22,7 @@ export const routes: Routes = [
     children: [
       { 
         path: 'user', 
-        loadChildren: () => import('./features/dashboard/user/dashboard.routes').then(m => m.DASHBOARD_ROUTES)
+        loadChildren: () => import('./features/dashboard/user/dashboard.routes').then(m => m.DASHBOARD_USER_ROUTES)
       }
     ]
   },

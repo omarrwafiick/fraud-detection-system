@@ -1,9 +1,17 @@
 import { Routes } from '@angular/router';
 import { guestGuard } from '../../core/guards/guest-guard';
+import { provideState } from '@ngrx/store';
+import { provideEffects } from '@ngrx/effects';
+import { authReducer } from './state/auth.reducer';
+import { AuthEffects } from './state/auth.effects';
 
 export const AUTH_ROUTES: Routes = [
   {
     path: '',
+    providers: [
+      provideState({ name: 'authFeature', reducer: authReducer }),
+      provideEffects(AuthEffects),
+    ],
     loadComponent: () => import('./auth.page').then(m => m.AuthPage),
     children: [
       { path: '', redirectTo: 'login', pathMatch: 'full' },
