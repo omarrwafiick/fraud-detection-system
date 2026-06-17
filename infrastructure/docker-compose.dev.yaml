@@ -46,10 +46,8 @@ services:
     image: postgres:15-alpine
     container_name: fraud_postgres_dev
     restart: always
-    environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: Hsa@AUFS32!R
-      POSTGRES_DB: fraud_detection_db
+    env_file:
+      - ./secrets/secrets.dev.txt
     ports:
       - "5432:5432"
     volumes:
@@ -72,8 +70,8 @@ services:
     image: neo4j:latest
     container_name: fraud_graph_db_dev
     restart: always
-    environment:
-      - NEO4J_AUTH=neo4j/HswAtSdo21DollarQ
+    env_file:
+      - ./secrets/secrets.dev.txt
     ports:
       - "7474:7474"
       - "7687:7687"
