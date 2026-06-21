@@ -2,13 +2,16 @@ import {
   CanActivate,
   ExecutionContext,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { Request } from 'express';
 import { RedisInstance } from '../../common/redis/redis.client';
+import { ApikeyService } from '../apikey.service';
 
 @Injectable()
 export class ApiKeyGuard implements CanActivate {
+  constructor(private readonly apikeyService: ApikeyService){}
   private readonly redisInstance = RedisInstance.get();
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -27,6 +30,12 @@ export class ApiKeyGuard implements CanActivate {
     const metadata = await this.redisInstance.get(key);
 
     if (!metadata) {
+      throw new NotFoundException('The API Key provided was not found.');
+    }
+
+    const isKeyValid = this.apikeyService.verifyKey(key);
+
+    if(!isKeyValid){
       throw new UnauthorizedException('Invalid API Key provided.');
     }
 
