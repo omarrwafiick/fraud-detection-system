@@ -23,30 +23,29 @@ services:
     volumes:
       - certbot_etc:/etc/letsencrypt
       - certbot_var:/var/www/certbot
-
-  zookeeper:
-    image: confluentinc/cp-zookeeper:7.5.0
-    container_name: fraud_zookeeper
-    restart: always
-    environment:
-      ZOOKEEPER_CLIENT_PORT: 2181
-      ZOOKEEPER_TICK_TIME: 2000
-    networks:
-      - fraud-network
-
   kafka:
-    image: confluentinc/cp-kafka:7.5.0
-    container_name: fraud_kafka
-    restart: always
-    depends_on:
-      - zookeeper
+    image: apache/kafka:3.9.0
+    container_name: fraud_kafka_dev
+    hostname: kafka
+    ports:
+      - "9092:9092"
     environment:
-      KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTER_NODE:PLAINTEXT,APP_CLIENT:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: INTER_NODE://kafka:29092,APP_CLIENT://kafka:9092
-      KAFKA_INTER_BROKER_LISTENER_NAME: INTER_NODE
+      KAFKA_NODE_ID: 1
+      KAFKA_CLUSTER_ID: fraud-kafka-cluster-1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:29093
+      KAFKA_LISTENERS: INTERNAL://0.0.0.0:29092,EXTERNAL://0.0.0.0:9092,CONTROLLER://0.0.0.0:29093
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:29092,EXTERNAL://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+    volumes:
+      - kafka_data:/var/lib/kafka/data
     networks:
       - fraud-network
 
@@ -93,3 +92,4 @@ volumes:
   neo4j_plugins:
   certbot_etc:
   certbot_var:
+  kafka_data:
