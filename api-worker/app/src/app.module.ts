@@ -21,6 +21,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { ProfileModule } from './profile/profile.module';
 import { TransactionsModule } from './transactions/transactions.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { MonitoringModule } from './monitoring/monitoring.module';
 
 @Module({
   imports: [
@@ -69,6 +70,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     ProfileModule,
     TransactionsModule,
     EventEmitterModule.forRoot(),
+    MonitoringModule,
   ],
   controllers: [],
   providers: [

@@ -3,7 +3,7 @@ version: '3.8'
 services:
   nginx:
     image: nginx:alpine
-    container_name: fraud_nginx
+    container_name: fraud_nginx_live
     restart: always
     ports:
       - "80:80"
@@ -18,14 +18,15 @@ services:
 
   certbot:
     image: certbot/certbot
-    container_name: fraud_certbot
+    container_name: fraud_certbot_live
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
     volumes:
       - certbot_etc:/etc/letsencrypt
       - certbot_var:/var/www/certbot
+
   kafka:
     image: apache/kafka:3.9.0
-    container_name: fraud_kafka_dev
+    container_name: fraud_kafka_live
     hostname: kafka
     ports:
       - "9092:9092"
@@ -51,7 +52,7 @@ services:
 
   postgres:
     image: postgres:15-alpine
-    container_name: fraud_postgres
+    container_name: fraud_postgres_live
     restart: always
     env_file:
       - ./secrets/secrets.prod.txt
@@ -62,7 +63,7 @@ services:
 
   redis:
     image: redis:7-alpine
-    container_name: fraud_redis
+    container_name: fraud_redis_live
     restart: always
     volumes:
       - redis_data:/var/lib/redis/data
@@ -71,13 +72,39 @@ services:
 
   neo4j:
     image: neo4j:latest
-    container_name: fraud_graph_db
+    container_name: fraud_graph_db_live
     restart: always
     env_file:
       - ./secrets/secrets.prod.txt
     volumes:
       - neo4j_data:/data
       - neo4j_plugins:/plugins
+    networks:
+      - fraud-network
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: fraud_prometheus_live
+    restart: always
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+    networks:
+      - fraud-network
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: fraud_grafana_live
+    restart: always
+    env_file:
+      - ./secrets/secrets.prod.txt
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    depends_on:
+      - prometheus
     networks:
       - fraud-network
 
@@ -93,3 +120,5 @@ volumes:
   certbot_etc:
   certbot_var:
   kafka_data:
+  prometheus_data:
+  grafana_data:
