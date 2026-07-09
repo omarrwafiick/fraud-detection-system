@@ -60,3 +60,34 @@ The system is decoupled into two primary containerized services communicating th
                                              ┌─────────────────────┐
                                              │   AlertsListener    │ ──> [ Creates Cases / Dashboard Records ]
                                              └─────────────────────┘ ──> [ Dispatches Merchant Webhooks / Slack ]
+
+                                   ─────────────────────────────────────────────
+                                          Observability & Monitoring Plane
+                                   ─────────────────────────────────────────────
+
+                                                 Metrics Scraping
+                                                        ▲
+                                                        │
+                                          ┌─────────────┴──────────────┐
+                                          │                            │
+                                   ┌─────────────┐                ┌─────────────┐
+                                   │ api-gateway │                │  api-worker │
+                                   │  /metrics   │                │   /metrics  │
+                                   └──────┬──────┘                └────┬────────┘
+                                          │                            │
+                                          └─────────────┬──────────────┘
+                                                        │
+                                                        ▼
+                                          ┌──────────────────────────┐
+                                          │       Prometheus         │
+                                          │   Metrics Collection     │
+                                          │  Time-Series Database    │
+                                          └─────────────┬────────────┘
+                                                        │ (PromQL Queries)
+                                                        ▼
+                                          ┌──────────────────────────┐
+                                          │         Grafana          │
+                                          │  Operational Dashboards  │
+                                          │   Alert Visualization    │
+                                          └──────────────────────────┘
+```
