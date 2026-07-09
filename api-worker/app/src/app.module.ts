@@ -21,6 +21,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { ProfileModule } from './profile/profile.module';
 import { TransactionsModule } from './transactions/transactions.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { MonitoringModule } from './monitoring/monitoring.module';
 
 @Module({
   imports: [
@@ -42,7 +43,10 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
       username: process.env.DATABASE_USERNAME || 'fraud_admin',
       password: process.env.DATABASE_PW || 'super_secure_password_2026',
       database: process.env.DATABASE_NAME || 'fraud_detection_db',
-      entities: [join(__dirname, '**', '*.entity.{ts,js}')],
+      entities: [
+        join(__dirname, '**', '*.entity.{ts,js}'), 
+        join(__dirname, '/../../**/*.pivot.ts'), 
+      ],
       synchronize: process.env.ENV_MODE ? process.env.ENV_MODE === 'development' : true,
       logging: process.env.ENV_MODE === 'development',
       autoLoadEntities: true,
@@ -66,6 +70,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     ProfileModule,
     TransactionsModule,
     EventEmitterModule.forRoot(),
+    MonitoringModule,
   ],
   controllers: [],
   providers: [

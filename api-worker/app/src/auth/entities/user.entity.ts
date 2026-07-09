@@ -37,6 +37,9 @@ export class User implements IUser {
 
   @Column({ type: 'varchar', length: 255 })
   passwordHash: string;
+  
+  @Column({ type: 'varchar', length: 255, default: '' })
+  refreshTokenHash?: string;
 
   @OneToMany(() => UserRoles, userRoles => userRoles.user)
   userRoles: UserRoles[];

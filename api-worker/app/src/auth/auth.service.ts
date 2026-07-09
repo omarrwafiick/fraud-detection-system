@@ -9,6 +9,8 @@ import { JwtService } from '@nestjs/jwt';
 import { TenantService } from 'src/tenant/tenant.service';
 import { RBACService } from './services/rbac.service';
 import { UserRoleWithPermissions } from './types/rbac.types';
+import { RefreshTokenDto } from './dtos/refreshToken.dto';
+import { Tokens } from './dtos/tokens.dto';
 
 @Injectable()
 export class AuthService {
@@ -31,7 +33,7 @@ export class AuthService {
         throw new UnauthorizedException('Invalid security credentials provided.');
     }
 
-    const isPasswordCorrect = await this.comparePasswords(payload.password, user.passwordHash);
+    const isPasswordCorrect = await this.compareHashed(payload.password, user.passwordHash);
 
     if (!isPasswordCorrect){
         this.logger.error(`Wrong password for user with email ${payload.email}`);
@@ -40,9 +42,9 @@ export class AuthService {
 
     const userRoles = await this.rbacService.getUserRolesWithPermissions(user.id);
 
-    const token = await this.generateToken(user, this.rbacService.formatRolesWithPermissions(userRoles));
+    const tokens = await this.generateToken(user, this.rbacService.formatRolesWithPermissions(userRoles));
     
-    return { user, token };
+    return { user, tokens };
   }
 
   async signup(payload: SignUpUserDto): Promise<BaseUserResponseDto> {
@@ -58,7 +60,7 @@ export class AuthService {
         entityManager
       );
 
-      const hashedPassword = await this.hashPassword(payload.password);
+      const hashedPassword = await this.hash(payload.password);
 
       const userRepo = entityManager.getRepository(User);
 
@@ -93,11 +95,19 @@ export class AuthService {
     });
   }
 
-  async refreshUserSession(userId: number): Promise<string> {
-    const user = await this.repository.findOne({ where: { id: userId } });
+  async refreshUserSession(payload: RefreshTokenDto): Promise<Tokens> {
+    const hashedToken = await this.hash(payload.refreshToken);
 
-    if (!user){
+    const user = await this.repository.findOne({ where: { refreshTokenHash: hashedToken } });
+
+    if (!user || !user.refreshTokenHash){
       throw new UnauthorizedException('Session refresh rejected.');
+    }
+
+    const isValidToken = await this.compareHashed(payload.refreshToken, user.refreshTokenHash);
+
+    if(!isValidToken){
+      throw new UnauthorizedException('Session refresh token is not valid.');
     }
 
     const userRoles = await this.rbacService.getUserRolesWithPermissions(user.id);
@@ -108,20 +118,36 @@ export class AuthService {
   private async generateToken(
     user: User, 
     roleAndPermissions: UserRoleWithPermissions[]
-  ): Promise<string> {
-    return this.jwtService.signAsync({
-      roles: [...roleAndPermissions],
-      tenantId: user.tenantId,
-      sub: user.id,
-      email: user.email,
-    });
+  ): Promise<Tokens> {
+    const [accessToken, refreshToken] = await Promise.all([
+      this.jwtService.signAsync({
+        roles: [...roleAndPermissions],
+        tenantId: user.tenantId,
+        sub: user.id,
+        email: user.email,
+      }),
+      this.jwtService.signAsync({
+        tenantId: user.tenantId,
+        sub: user.id,
+      },
+      {
+        expiresIn: '7d',
+      }),
+    ]);
+
+    await this.repository.update(user.id, { refreshTokenHash: await this.hash(refreshToken) });
+
+    return {
+      access_token: accessToken,
+      refresh_token: refreshToken,
+    }
   }
 
-  private hashPassword(password: string): Promise<string> {
+  private hash(password: string): Promise<string> {
     return bcrypt.hash(password, 10);
   }
 
-  private comparePasswords(password: string, hashed: string): Promise<boolean> {
-    return bcrypt.compare(password, hashed);
+  private compareHashed(original: string, hashed: string): Promise<boolean> {
+    return bcrypt.compare(original, hashed);
   }
 }

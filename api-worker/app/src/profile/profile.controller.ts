@@ -22,14 +22,4 @@ export class ProfileController {
         }
         return this.profileService.getProfile(userId);
     }
-
-    @Get('test-dummy')   // Compiles out to match: /worker/test-dummy
-    @HttpCode(HttpStatus.OK)
-    getDummyTest() {
-        return {
-        status: 'success',
-        message: 'Dummy testing endpoint works perfectly via NestJS native routing tree!',
-        timestamp: new Date().toISOString(),
-        };
-    }
 }
